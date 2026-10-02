@@ -1,0 +1,14 @@
+{
+  "contractVersion": 1,
+  "documents": [
+    {
+      "byteCount": 42,
+      "extension": "swift",
+      "id": "7f2c9c2e-1b4a-4e0a-9c11-6a1d0e5b9a10",
+      "modifiedAt": "2026-10-02T18:00:00Z",
+      "name": "ContentView.swift",
+      "relativePath": "ContentView.swift"
+    }
+  ],
+  "generatedAt": "2026-10-02T18:00:01Z"
+}

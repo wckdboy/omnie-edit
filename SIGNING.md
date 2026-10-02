@@ -1,34 +1,34 @@
 # Signing and TestFlight
 
-Team `XKA8CGC2AB`. `CODE_SIGN_STYLE` is Automatic on OmnieEdit, OmnieFileProvider, and OmnieEditTests, for Debug and Release. `DEVELOPMENT_TEAM` is `XKA8CGC2AB` on all six of those configurations.
+Team `XKA8CGC2AB`. The Xcode project keeps `CODE_SIGN_STYLE` Automatic on OmnieEdit, OmnieFileProvider, and OmnieEditTests, for Debug and Release, so a local run can use a development certificate. `DEVELOPMENT_TEAM` is `XKA8CGC2AB` on all six of those configurations.
 
-| Target | Bundle ID |
-| --- | --- |
-| OmnieEdit | `ai.wckd.omnie.edit` |
-| OmnieFileProvider | `ai.wckd.omnie.edit.fileprovider` |
-| OmnieEditTests | `ai.wckd.omnie.edit.tests` |
+TestFlight does not use that automatic path. On Xcode 27, `xcodebuild` with `-authenticationKeyPath` and `-allowProvisioningUpdates` fails while fetching a bearer token from App Store Connect (`Authentication failed: Make sure a bearer token was provided`). `scripts/ci-testflight.sh` archives with manual signing instead: it imports the Apple Distribution certificate, installs the two App Store profiles, and does not pass authentication flags to the archive or the export.
 
-Omnie iOS stays `ai.wckd.omnie` on the same team. The shared App Group stays `group.app.omnie.edit`.
+| Target | Bundle ID | App Store profile |
+| --- | --- | --- |
+| OmnieEdit | `ai.wckd.omnie.edit` | `OmnieEdit AppStore CI` |
+| OmnieFileProvider | `ai.wckd.omnie.edit.fileprovider` | `OmnieEditFP AppStore CI` |
+| OmnieEditTests | `ai.wckd.omnie.edit.tests` | none (not archived) |
+
+Omnie iOS stays `ai.wckd.omnie` on the same team.
 
 No certificate, provisioning profile, or `.p8` belongs in this repository. `.gitignore` rejects `*.p8`, `*.p12`, `*.cer`, `*.mobileprovision`, and `*.provisionprofile`. Values live in Actions secrets.
 
-## App Group for Omnie and Omnie Edit
+## App Group
 
-`OmnieEdit/OmnieEdit.entitlements` requests `group.app.omnie.edit` for Debug and Release. `OmnieFileProvider/Debug.entitlements` and `OmnieFileProvider/Release.entitlements` request the same group. `OmnieFileProvider/Info.plist` sets `NSExtensionFileProviderDocumentGroup` to that group. Omnie (`ai.wckd.omnie`) reads `OmnieEdit/catalog.json` and `OmnieEdit/Documents/`. Omnie Edit is the writer.
+The shared-folder contract is still `group.app.omnie.edit`. `Sources/OmnieDocumentKit/OmnieContract.swift` uses that identifier, and `OmnieFileProvider/Info.plist` sets `NSExtensionFileProviderDocumentGroup` to it. Omnie (`ai.wckd.omnie`) would read `OmnieEdit/catalog.json` and `OmnieEdit/Documents/` from that container. Omnie Edit is the writer. When the entitlement is missing, `containerURL(forSecurityApplicationGroupIdentifier:)` returns nil and the editor keeps files in its private Application Support folder.
 
-Automatic signing does not create the group until each App ID allows it.
+The App Store profiles `OmnieEdit AppStore CI` and `OmnieEditFP AppStore CI` have empty app groups. A binary that requests `com.apple.security.application-groups` / `group.app.omnie.edit` will not sign with those profiles. These files therefore do not request the group:
 
-1. Apple Developer → Identifiers → App Groups, on team `XKA8CGC2AB`: register `group.app.omnie.edit` if it is not there yet.
-2. App ID `ai.wckd.omnie` (Omnie): enable App Groups and include `group.app.omnie.edit`.
-3. App ID `ai.wckd.omnie.edit` (Omnie Edit): enable App Groups and include `group.app.omnie.edit`.
-4. App ID `ai.wckd.omnie.edit.fileprovider`: enable App Groups and include `group.app.omnie.edit`. Enable the production File Provider capability on this App ID when the portal asks for it.
-5. In Xcode, leave `CODE_SIGN_ENTITLEMENTS` as committed. The app target uses `OmnieEdit/OmnieEdit.entitlements` for Debug and Release. The extension uses `OmnieFileProvider/Debug.entitlements` for Debug and `OmnieFileProvider/Release.entitlements` for Release.
+- `OmnieEdit/OmnieEdit.entitlements` (Debug and Release for the app)
+- `OmnieFileProvider/Debug.entitlements`
+- `OmnieFileProvider/Release.entitlements`
+
+Put the group back only together: add it to both App IDs, regenerate both profiles so the entitlement is present, store the new profiles in the two `PROVISION_*` secrets, and add the key back to the three entitlement files. Until then, a TestFlight build does not get the shared container, and omnie-ios cannot list those files.
 
 Debug builds of the file provider include `com.apple.developer.fileprovider.testing-mode` so the domain can load before the account has the production File Provider capability. `OmnieFileProvider/Release.entitlements` omits that key. The TestFlight archive uses the Release configuration, so the uploaded extension does not carry testing mode.
 
 `ai.wckd.omnie.edit.tests` is for local device tests. Archiving the `OmnieEdit` scheme uploads the app and the embedded file provider. It does not upload the test bundle.
-
-The first launch after the profile includes the group creates the container. Until then, files stay in the app-private Application Support folder, and Settings says so.
 
 ## What CI does
 
@@ -36,10 +36,12 @@ The first launch after the profile includes the group creates the container. Unt
 
 `scripts/ci-testflight.sh` then:
 
-1. Checks the team, the three bundle IDs, the App Group on the app and both file-provider entitlement files, and that Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`.
-2. Archives the `OmnieEdit` scheme, Release, destination `generic/platform=iOS`, with automatic signing for team `XKA8CGC2AB`.
-3. Exports an App Store IPA with `ExportOptions.plist` (`method` `app-store-connect`, `signingStyle` `automatic`, `teamID` `XKA8CGC2AB`).
-4. Uploads that archive to App Store Connect, which is what makes the build show up in TestFlight.
+1. Checks the team, the three bundle IDs, that the app and both file-provider entitlement files omit `com.apple.security.application-groups` and `group.app.omnie.edit`, and that Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`.
+2. Imports `IOS_DISTRIBUTION_P12_BASE64` into a temporary keychain as an Apple Distribution identity, then deletes that keychain on exit.
+3. Installs `PROVISION_OMNIE_EDIT_BASE64` (`OmnieEdit AppStore CI`, `ai.wckd.omnie.edit`) and `PROVISION_OMNIE_EDIT_FP_BASE64` (`OmnieEditFP AppStore CI`, `ai.wckd.omnie.edit.fileprovider`). The script rejects a profile whose name, bundle id, or app group does not match.
+4. Archives the `OmnieEdit` scheme, Release, destination `generic/platform=iOS`, with manual signing for team `XKA8CGC2AB`, identity `Apple Distribution`, and `PROVISIONING_PROFILE_SPECIFIER` set per target. The archive command does not pass `-allowProvisioningUpdates` or `-authenticationKeyPath`.
+5. Exports an App Store IPA with `ExportOptions.plist` (`method` `app-store-connect`, `signingStyle` `manual`, `signingCertificate` `Apple Distribution`, `teamID` `XKA8CGC2AB`, and a `provisioningProfiles` map for both bundle IDs). The export command also has no App Store Connect authentication flags.
+6. Uploads that IPA with `xcrun altool --upload-app` and the API key (`--apiKey` / `--apiIssuer`). The `.p8` is written where altool looks (`API_PRIVATE_KEYS_DIR` and `~/.appstoreconnect/private_keys`) and removed on exit. If this Xcode has no `altool`, the script uses `xcrun iTMSTransporter -m upload -assetFile` with the same key. It does not ask `xcodebuild -exportArchive` to upload.
 
 The build number sent to App Store Connect is `github.run_number` for this workflow (`CURRENT_PROJECT_VERSION`). The marketing version stays `MARKETING_VERSION` (`1.0`) in the Xcode project. App Store Connect rejects a second upload of the same build number. A re-run of a run that already uploaded needs a new run.
 
@@ -51,29 +53,29 @@ Set these for the repository that runs `.github/workflows/testflight.yml`. The n
 
 | Secret | What to store |
 | --- | --- |
-| `APP_STORE_CONNECT_API_KEY_ID` | Key ID of the App Store Connect API key. |
-| `APP_STORE_CONNECT_ISSUER_ID` | Issuer ID from the App Store Connect API keys page. |
-| `APP_STORE_CONNECT_API_KEY` | Full contents of the downloaded `.p8` file, including the `BEGIN PRIVATE KEY` and `END PRIVATE KEY` lines. A single line with `\n` between the PEM lines is accepted. |
+| `IOS_DISTRIBUTION_P12_BASE64` | Base64 of the Apple Distribution `.p12` for team `XKA8CGC2AB`. Whitespace is ignored. |
+| `IOS_DISTRIBUTION_P12_PASSWORD` | Password for that `.p12`. |
+| `PROVISION_OMNIE_EDIT_BASE64` | Base64 of the App Store profile named `OmnieEdit AppStore CI` for `ai.wckd.omnie.edit`. Empty app groups. |
+| `PROVISION_OMNIE_EDIT_FP_BASE64` | Base64 of the App Store profile named `OmnieEditFP AppStore CI` for `ai.wckd.omnie.edit.fileprovider`. Empty app groups. |
+| `APP_STORE_CONNECT_API_KEY_ID` | Key ID of the App Store Connect API key. Used only for the upload. |
+| `APP_STORE_CONNECT_ISSUER_ID` | Issuer ID from the App Store Connect API keys page. Used only for the upload. |
+| `APP_STORE_CONNECT_API_KEY` | Full contents of the downloaded `.p8` file, including the `BEGIN PRIVATE KEY` and `END PRIVATE KEY` lines. A single line with `\n` between the PEM lines is accepted. Used only for the upload. |
 
-The script writes the `.p8` under the runner temp directory for `xcodebuild -authenticationKeyPath` and removes it when the job exits. It does not print the key.
+The script writes the `.p12`, the profiles, and the `.p8` under the runner temp directory (and the `.p8` in altool's private-keys directory) and removes them when the job exits. It does not print the key, the certificate password, or the profile bytes.
 
-If any of the three values is missing, the TestFlight job fails.
+If any of these values is missing, the TestFlight job fails before it archives.
 
 ## Outside this repository
 
-The workflow does not create the Connect app, the App IDs, or the API key.
+The workflow does not create the Connect app, the App IDs, the certificate, or the API key.
 
-1. Apple Developer → Identifiers, team `XKA8CGC2AB`: App IDs `ai.wckd.omnie`, `ai.wckd.omnie.edit`, and `ai.wckd.omnie.edit.fileprovider`, each with App Group `group.app.omnie.edit`. The extension App ID needs the production File Provider capability. Leave testing mode off the distribution App ID. Automatic signing covers `ai.wckd.omnie.edit.tests` for local device runs.
-2. App Store Connect → Apps: create the app for bundle ID `ai.wckd.omnie.edit` (name, SKU, primary language) when it is not there yet. The file provider ships inside that app. There is no separate Connect record for `ai.wckd.omnie.edit.fileprovider`.
-3. App Store Connect → Users and Access → Integrations → App Store Connect API: create a key with the Admin or App Manager role so Xcode can sign and upload. Download the `.p8` once. Apple does not show it again. Copy the Key ID and the Issuer ID into the three secrets above.
-4. Confirm this repository can schedule the `xcode-27` runner. Until that label is available, the workflow cannot start.
-5. After an upload, wait for processing in App Store Connect. `ITSAppUsesNonExemptEncryption` is already false. Add internal testers on the TestFlight page. External testing still goes through Beta App Review in App Store Connect. This workflow does not submit that review.
+1. Apple Developer → Identifiers, team `XKA8CGC2AB`: App IDs `ai.wckd.omnie.edit` and `ai.wckd.omnie.edit.fileprovider`. Leave App Groups off those IDs while the profiles have empty app groups. The extension App ID needs the production File Provider capability. Leave testing mode off the distribution App ID. Automatic signing still covers local device runs, including `ai.wckd.omnie.edit.tests`.
+2. Apple Developer → Profiles: App Store profiles named `OmnieEdit AppStore CI` and `OmnieEditFP AppStore CI`, signed by the Apple Distribution certificate stored in `IOS_DISTRIBUTION_P12_BASE64`.
+3. App Store Connect → Apps: create the app for bundle ID `ai.wckd.omnie.edit` (name, SKU, primary language) when it is not there yet. The file provider ships inside that app. There is no separate Connect record for `ai.wckd.omnie.edit.fileprovider`.
+4. App Store Connect → Users and Access → Integrations → App Store Connect API: create a key with the Admin or App Manager role so altool can upload. Download the `.p8` once. Apple does not show it again. Copy the Key ID and the Issuer ID into the three upload secrets above. The archive does not use this key.
+5. Confirm this repository can schedule the `xcode-27` runner. Until that label is available, the workflow cannot start.
+6. After an upload, wait for processing in App Store Connect. `ITSAppUsesNonExemptEncryption` is already false. Add internal testers on the TestFlight page. External testing still goes through Beta App Review in App Store Connect. This workflow does not submit that review.
 
 ## Local export
 
-The same plist is what a local archive uses. Point `-authenticationKeyPath` at a `.p8` that is not in the tree:
-
-```
-xcodebuild archive -project OmnieEdit.xcodeproj -scheme OmnieEdit -configuration Release -destination 'generic/platform=iOS' -archivePath build/OmnieEdit.xcarchive -allowProvisioningUpdates -authenticationKeyPath /path/to/AuthKey.p8 -authenticationKeyID KEYID -authenticationKeyIssuerID ISSUER
-xcodebuild -exportArchive -archivePath build/OmnieEdit.xcarchive -exportPath build/export -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -authenticationKeyPath /path/to/AuthKey.p8 -authenticationKeyID KEYID -authenticationKeyIssuerID ISSUER
-```
+Day-to-day runs stay on automatic signing in the Xcode project. The committed `ExportOptions.plist` is the manual TestFlight export: it expects the Apple Distribution identity and both profiles to be installed, and it does not contact App Store Connect. Use `scripts/ci-testflight.sh` on the `xcode-27` runner for the upload. Do not pass `-allowProvisioningUpdates` or `-authenticationKeyPath` to that archive; Xcode 27 rejects the bearer token those flags request.

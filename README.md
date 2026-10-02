@@ -17,7 +17,7 @@ The editor still runs if the app group is not entitled yet. In that case files s
 1. Open `OmnieEdit.xcodeproj`.
 2. Select the **OmnieEdit** scheme and an iPhone simulator or a device.
 3. Signing is automatic for team `XKA8CGC2AB` on OmnieEdit, OmnieFileProvider, and OmnieEditTests. The bundle IDs are `ai.wckd.omnie.edit`, `ai.wckd.omnie.edit.fileprovider`, and `ai.wckd.omnie.edit.tests`.
-4. Confirm the app and the file provider use the App Group `group.app.omnie.edit` (the entitlements files already request it). Create that group on the developer account, and enable it on the Omnie and Omnie Edit App IDs, if Xcode asks. The portal steps are in `SIGNING.md`.
+4. The committed entitlements do not request App Group `group.app.omnie.edit`. The App Store profiles used by TestFlight have empty app groups, so the entitlement is omitted and files stay in the app’s private Application Support folder. `SIGNING.md` describes what has to change before the shared folder is available.
 5. Run.
 
 Debug builds of the file provider include `com.apple.developer.fileprovider.testing-mode` so the domain can load before the account has the production File Provider capability. `OmnieFileProvider/Release.entitlements` does not include that key. Use the Release entitlements for an App Store archive.
@@ -43,7 +43,7 @@ To dispatch it:
 1. Open Actions for this repository, choose **TestFlight**, and run the workflow on the branch you want archived.
 2. Or push a tag such as `v1.0.0`.
 
-The workflow reads three Actions secrets: `APP_STORE_CONNECT_API_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, and `APP_STORE_CONNECT_API_KEY`. It does not put those values in git. Team, bundle IDs, the App Group on the Omnie and Omnie Edit App IDs, and the App Store Connect app for `ai.wckd.omnie.edit` are described in `SIGNING.md`. The steps that create the App IDs, the Connect app, and the API key stay outside this repository.
+The workflow signs manually with the Apple Distribution certificate and the two App Store profiles (`IOS_DISTRIBUTION_P12_BASE64`, `IOS_DISTRIBUTION_P12_PASSWORD`, `PROVISION_OMNIE_EDIT_BASE64`, `PROVISION_OMNIE_EDIT_FP_BASE64`), then uploads the IPA with `APP_STORE_CONNECT_API_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, and `APP_STORE_CONNECT_API_KEY`. It does not put those values in git, and the archive does not send the API key to `xcodebuild`. Team, bundle IDs, profiles, and the App Store Connect app for `ai.wckd.omnie.edit` are described in `SIGNING.md`. The steps that create the App IDs, the certificate, the profiles, the Connect app, and the API key stay outside this repository.
 
 The uploaded build keeps `ITSAppUsesNonExemptEncryption` false. Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`. The app still has no network client and no analytics SDK.
 
@@ -77,7 +77,7 @@ This is the v1 contract. Omnie-edit is the only writer. Peers read.
 
 ### Entitlement
 
-Both apps, same team:
+Both apps, same team, once the App IDs and profiles include the group:
 
 ```xml
 <key>com.apple.security.application-groups</key>
@@ -85,6 +85,8 @@ Both apps, same team:
   <string>group.app.omnie.edit</string>
 </array>
 ```
+
+The entitlements files in this repository do not include that key. The TestFlight profiles have empty app groups, so requesting it would fail signing. See `SIGNING.md`.
 
 ### On disk
 

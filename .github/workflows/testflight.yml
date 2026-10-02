@@ -5,10 +5,20 @@
 # Runner: the public-preview label xcode-27 (arm64). scripts/ci-testflight.sh
 # refuses to archive on anything older than Xcode 27.
 #
+# Signing is manual. xcodebuild's App Store Connect bearer token
+# (-authenticationKeyPath / -allowProvisioningUpdates) fails on Xcode 27, so
+# the archive does not use those flags. The distribution certificate and the
+# two App Store profiles are imported in the script. The API key is used only
+# to upload the IPA with altool.
+#
 # Secrets (values live in Actions, never in git; see SIGNING.md):
-#   APP_STORE_CONNECT_API_KEY_ID   App Store Connect API key ID
-#   APP_STORE_CONNECT_ISSUER_ID    App Store Connect issuer ID
-#   APP_STORE_CONNECT_API_KEY      .p8 file contents
+#   IOS_DISTRIBUTION_P12_BASE64       Apple Distribution .p12, base64
+#   IOS_DISTRIBUTION_P12_PASSWORD     password for that .p12
+#   PROVISION_OMNIE_EDIT_BASE64       profile "OmnieEdit AppStore CI"
+#   PROVISION_OMNIE_EDIT_FP_BASE64    profile "OmnieEditFP AppStore CI"
+#   APP_STORE_CONNECT_API_KEY_ID      App Store Connect API key ID (upload)
+#   APP_STORE_CONNECT_ISSUER_ID       App Store Connect issuer ID (upload)
+#   APP_STORE_CONNECT_API_KEY         .p8 file contents (upload)
 
 name: TestFlight
 
@@ -38,6 +48,10 @@ jobs:
 
       - name: Archive, export, and upload
         env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          PROVISION_OMNIE_EDIT_BASE64: ${{ secrets.PROVISION_OMNIE_EDIT_BASE64 }}
+          PROVISION_OMNIE_EDIT_FP_BASE64: ${{ secrets.PROVISION_OMNIE_EDIT_FP_BASE64 }}
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}

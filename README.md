@@ -169,3 +169,7 @@ Contract/catalog.example.json  Fixture for the catalog schema
 ## Out of scope for v1
 
 Cloud sync, collaboration, accounts, AI chat, analytics, Mac Catalyst, and App Store Connect or TestFlight wiring.
+
+## TestFlight
+
+TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs on `workflow_dispatch` and on tags starting with `v`. It does not run on pull requests. The job uses the `xcode-27` runner. Secrets and portal steps are in `SIGNING.md`.

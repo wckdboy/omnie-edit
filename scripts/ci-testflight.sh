@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 # Archive Omnie-edit for the App Store and upload it to TestFlight.
 #
-# Signing is manual. On Xcode 27, xcodebuild -authenticationKeyPath asks App
-# Store Connect for a bearer token and fails ("Authentication failed: Make sure
-# a bearer token was provided"). This script imports the Apple Distribution
-# certificate and the two App Store profiles, archives without those auth
-# flags, and uploads the IPA with altool's API key.
+# Omnie-edit needs Xcode 16 or later. The project is objectVersion 56 and
+# IPHONEOS_DEPLOYMENT_TARGET is 17.0. The workflow runs on macos-15 and
+# selects Xcode 16.4.
+#
+# Signing is manual. Per-target xcodebuild settings (OmnieEdit:CODE_SIGN_*)
+# are ignored, so Xcode still asks for a Development profile. Before the
+# archive, this script writes the OmnieEdit and OmnieFileProvider Release
+# configurations to Manual, Apple Distribution, CODE_SIGN_IDENTITY[sdk=iphoneos*],
+# and the matching PROVISIONING_PROFILE_SPECIFIER. The archive command then
+# passes only global settings. The script imports the Apple Distribution
+# certificate and the two App Store profiles, does not pass
+# -authenticationKeyPath or -allowProvisioningUpdates, and uploads the IPA
+# with altool's API key.
 #
 # Required environment (Actions secrets; see SIGNING.md):
 #   IOS_DISTRIBUTION_P12_BASE64
@@ -73,15 +81,23 @@ cleanup() {
 }
 trap cleanup EXIT
 
+developer_dir="/Applications/Xcode_16.4.app/Contents/Developer"
+if [[ -d "$developer_dir" ]]; then
+  sudo xcode-select -s "$developer_dir"
+  echo "Selected ${developer_dir}"
+else
+  echo "Xcode_16.4.app is not installed. Using the active developer directory."
+fi
+
 if ! command -v xcodebuild >/dev/null 2>&1; then
-  fail "xcodebuild is not installed. Run .github/workflows/testflight.yml on the xcode-27 runner."
+  fail "xcodebuild is not installed. Run .github/workflows/testflight.yml on macos-15, which provides Xcode 16.4."
 fi
 
 version_line="$(xcodebuild -version)"
 version_line="${version_line%%$'\n'*}"
 major="$(printf '%s\n' "$version_line" | awk '{ split($2, a, "."); print a[1] }')"
-if [[ -z "$major" || "$major" -lt 27 ]]; then
-  fail "Found ${version_line:-no Xcode version}. The TestFlight path needs Xcode 27. The xcode-27 runner label provides it."
+if [[ -z "$major" || "$major" -lt 16 ]]; then
+  fail "Found ${version_line:-no Xcode version}. Omnie-edit archives with Xcode 16 or later. The macos-15 workflow selects Xcode 16.4."
 fi
 echo "Using ${version_line}"
 
@@ -106,7 +122,7 @@ if [[ "$team_hits" -ne 6 ]]; then
   fail "Expected DEVELOPMENT_TEAM = ${team} on all six target configurations, found ${team_hits}."
 fi
 if ! grep -q "CODE_SIGN_STYLE = Automatic;" OmnieEdit.xcodeproj/project.pbxproj; then
-  fail "OmnieEdit.xcodeproj should stay on automatic signing for local runs. CI passes CODE_SIGN_STYLE=Manual."
+  fail "OmnieEdit.xcodeproj should stay on automatic signing for local runs. The script switches OmnieEdit and OmnieFileProvider Release to manual before archive."
 fi
 for bundle in \
   "PRODUCT_BUNDLE_IDENTIFIER = ${app_bundle};" \
@@ -294,10 +310,81 @@ xcodebuild -resolvePackageDependencies \
   -scheme OmnieEdit \
   -clonedSourcePackagesDirPath "$packages"
 
-# Manual signing is per target so the file provider gets its own profile.
-# No -allowProvisioningUpdates and no -authenticationKey* flags: those ask
-# App Store Connect for a bearer token, which Xcode 27 rejects.
+# Per-target "OmnieEdit:CODE_SIGN_*" arguments are ignored and Xcode still
+# requests a Development profile. Write the Release settings into the project
+# instead. The archive below passes only global settings, so each target keeps
+# the profile written here. No -allowProvisioningUpdates and no
+# -authenticationKey* flags: the API key is for the altool upload only.
+patch_release_signing() {
+  local pbx="OmnieEdit.xcodeproj/project.pbxproj"
+  python3 - "$pbx" "$app_bundle" "$app_profile_name" "$extension_bundle" "$extension_profile_name" "$identity" <<'PY'
+import pathlib
+import re
+import sys
+
+path, app_bundle, app_profile, extension_bundle, extension_profile, identity = sys.argv[1:]
+profiles = {
+    app_bundle: app_profile,
+    extension_bundle: extension_profile,
+}
+text = pathlib.Path(path).read_text()
+pattern = re.compile(
+    r"\t\t[0-9A-F]+ /\* Release \*/ = \{\n"
+    r"\t\t\tisa = XCBuildConfiguration;\n"
+    r"\t\t\tbuildSettings = \{.*?\n"
+    r"\t\t\t\};\n"
+    r"\t\t\tname = Release;\n"
+    r"\t\t\};",
+    re.DOTALL,
+)
+patched = {}
+
+def replace_block(match):
+    block = match.group(0)
+    found = re.search(r"PRODUCT_BUNDLE_IDENTIFIER = ([^;]+);", block)
+    if not found:
+        return block
+    bundle = found.group(1).strip().strip('"')
+    if bundle not in profiles:
+        return block
+    if block.count("CODE_SIGN_STYLE = Automatic;") != 1:
+        raise SystemExit(f"error: Release configuration for {bundle} is not Automatic")
+    if "PROVISIONING_PROFILE_SPECIFIER" in block or "CODE_SIGN_IDENTITY" in block:
+        raise SystemExit(f"error: Release configuration for {bundle} already has manual signing settings")
+    profile = profiles[bundle]
+    setting = "\t" * 7
+    lines = [
+        f'{setting}CODE_SIGN_IDENTITY = "{identity}";',
+        f'{setting}"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "{identity}";',
+        f"{setting}CODE_SIGN_STYLE = Manual;",
+        f'{setting}PROVISIONING_PROFILE_SPECIFIER = "{profile}";',
+        f'{setting}"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "{profile}";',
+    ]
+    replacement = "\n".join(lines) + "\n"
+    block2, count = re.subn(r"\t+CODE_SIGN_STYLE = Automatic;\n", replacement, block, count=1)
+    if count != 1:
+        raise SystemExit(f"error: could not replace CODE_SIGN_STYLE for {bundle}")
+    patched[bundle] = profile
+    return block2
+
+new_text, _ = pattern.subn(replace_block, text)
+missing = [bundle for bundle in profiles if bundle not in patched]
+if missing:
+    raise SystemExit("error: did not patch Release signing for " + ", ".join(missing))
+automatic = new_text.count("CODE_SIGN_STYLE = Automatic;")
+manual = new_text.count("CODE_SIGN_STYLE = Manual;")
+if automatic != 4 or manual != 2:
+    raise SystemExit(
+        f"error: expected 4 Automatic and 2 Manual CODE_SIGN_STYLE, found {automatic} and {manual}"
+    )
+pathlib.Path(path).write_text(new_text)
+for bundle, profile in patched.items():
+    print(f"Patched Release signing for {bundle} -> {profile}")
+PY
+}
+
 echo "Archiving Release for generic/platform=iOS (build ${OMNIE_BUILD_NUMBER})"
+patch_release_signing
 xcodebuild archive \
   -project OmnieEdit.xcodeproj \
   -scheme OmnieEdit \
@@ -306,16 +393,10 @@ xcodebuild archive \
   -archivePath "$archive" \
   -clonedSourcePackagesDirPath "$packages" \
   DEVELOPMENT_TEAM="$team" \
-  "OmnieEdit:CODE_SIGN_STYLE=Manual" \
-  "OmnieFileProvider:CODE_SIGN_STYLE=Manual" \
-  "OmnieEdit:CODE_SIGN_IDENTITY=${identity}" \
-  "OmnieFileProvider:CODE_SIGN_IDENTITY=${identity}" \
-  "OmnieEdit:DEVELOPMENT_TEAM=${team}" \
-  "OmnieFileProvider:DEVELOPMENT_TEAM=${team}" \
-  "OmnieEdit:PROVISIONING_PROFILE_SPECIFIER=${app_profile_name}" \
-  "OmnieFileProvider:PROVISIONING_PROFILE_SPECIFIER=${extension_profile_name}" \
-  "OmnieEdit:OTHER_CODE_SIGN_FLAGS=--keychain ${keychain}" \
-  "OmnieFileProvider:OTHER_CODE_SIGN_FLAGS=--keychain ${keychain}" \
+  CODE_SIGN_STYLE=Manual \
+  "CODE_SIGN_IDENTITY=${identity}" \
+  "CODE_SIGN_IDENTITY[sdk=iphoneos*]=${identity}" \
+  "OTHER_CODE_SIGN_FLAGS=--keychain ${keychain}" \
   CURRENT_PROJECT_VERSION="$OMNIE_BUILD_NUMBER"
 
 echo "Exporting App Store IPA"

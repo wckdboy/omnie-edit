@@ -2,7 +2,7 @@
 
 Team `XKA8CGC2AB`. The Xcode project keeps `CODE_SIGN_STYLE` Automatic on OmnieEdit, OmnieFileProvider, and OmnieEditTests, for Debug and Release, so a local run can use a development certificate. `DEVELOPMENT_TEAM` is `XKA8CGC2AB` on all six of those configurations.
 
-TestFlight does not use that automatic path. On Xcode 27, `xcodebuild` with `-authenticationKeyPath` and `-allowProvisioningUpdates` fails while fetching a bearer token from App Store Connect (`Authentication failed: Make sure a bearer token was provided`). `scripts/ci-testflight.sh` archives with manual signing instead: it imports the Apple Distribution certificate, installs the two App Store profiles, and does not pass authentication flags to the archive or the export.
+TestFlight does not use that automatic path. `scripts/ci-testflight.sh` imports the Apple Distribution certificate and the two App Store profiles, then patches the OmnieEdit and OmnieFileProvider Release configurations to manual signing before it archives. The archive command passes only global `xcodebuild` settings. It does not pass `-authenticationKeyPath` or `-allowProvisioningUpdates`. The API key is used only for the `altool` upload.
 
 | Target | Bundle ID | App Store profile |
 | --- | --- | --- |
@@ -32,14 +32,14 @@ Debug builds of the file provider include `com.apple.developer.fileprovider.test
 
 ## What CI does
 
-`.github/workflows/testflight.yml` runs on `workflow_dispatch` and on tags that start with `v`. The job uses the `xcode-27` runner (arm64). It does not run on pull requests. `scripts/ci-testflight.sh` refuses to archive when `xcodebuild -version` is older than Xcode 27.
+`.github/workflows/testflight.yml` runs on `workflow_dispatch` and on tags that start with `v`. The job uses the GitHub-hosted `macos-15` runner and selects Xcode 16.4 (`/Applications/Xcode_16.4.app`). It does not run on pull requests. Omnie-edit needs Xcode 16 or later. `scripts/ci-testflight.sh` refuses to archive when `xcodebuild -version` is older than Xcode 16.
 
 `scripts/ci-testflight.sh` then:
 
 1. Checks the team, the three bundle IDs, that the app and both file-provider entitlement files omit `com.apple.security.application-groups` and `group.app.omnie.edit`, and that Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`.
 2. Imports `IOS_DISTRIBUTION_P12_BASE64` into a temporary keychain as an Apple Distribution identity, then deletes that keychain on exit.
 3. Installs `PROVISION_OMNIE_EDIT_BASE64` (`OmnieEdit AppStore CI`, `ai.wckd.omnie.edit`) and `PROVISION_OMNIE_EDIT_FP_BASE64` (`OmnieEditFP AppStore CI`, `ai.wckd.omnie.edit.fileprovider`). The script rejects a profile whose name, bundle id, or app group does not match.
-4. Archives the `OmnieEdit` scheme, Release, destination `generic/platform=iOS`, with manual signing for team `XKA8CGC2AB`, identity `Apple Distribution`, and `PROVISIONING_PROFILE_SPECIFIER` set per target. The archive command does not pass `-allowProvisioningUpdates` or `-authenticationKeyPath`.
+4. Patches the OmnieEdit and OmnieFileProvider **Release** configurations in `project.pbxproj` to `CODE_SIGN_STYLE = Manual`, `CODE_SIGN_IDENTITY` `Apple Distribution`, `CODE_SIGN_IDENTITY[sdk=iphoneos*]`, and `PROVISIONING_PROFILE_SPECIFIER` (`OmnieEdit AppStore CI` for the app, `OmnieEditFP AppStore CI` for the extension, including the `sdk=iphoneos*` specifier). Debug and OmnieEditTests stay Automatic. It then archives the `OmnieEdit` scheme, Release, destination `generic/platform=iOS`, passing only global settings: `DEVELOPMENT_TEAM`, `CODE_SIGN_STYLE`, `CODE_SIGN_IDENTITY`, `CODE_SIGN_IDENTITY[sdk=iphoneos*]`, `OTHER_CODE_SIGN_FLAGS` for the temporary keychain, and `CURRENT_PROJECT_VERSION`. There is no `Target:` prefix. The archive command does not pass `-allowProvisioningUpdates` or `-authenticationKeyPath`.
 5. Exports an App Store IPA with `ExportOptions.plist` (`method` `app-store-connect`, `signingStyle` `manual`, `signingCertificate` `Apple Distribution`, `teamID` `XKA8CGC2AB`, and a `provisioningProfiles` map for both bundle IDs). The export command also has no App Store Connect authentication flags.
 6. Uploads that IPA with `xcrun altool --upload-app` and the API key (`--apiKey` / `--apiIssuer`). The `.p8` is written where altool looks (`API_PRIVATE_KEYS_DIR` and `~/.appstoreconnect/private_keys`) and removed on exit. If this Xcode has no `altool`, the script uses `xcrun iTMSTransporter -m upload -assetFile` with the same key. It does not ask `xcodebuild -exportArchive` to upload.
 
@@ -73,9 +73,9 @@ The workflow does not create the Connect app, the App IDs, the certificate, or t
 2. Apple Developer → Profiles: App Store profiles named `OmnieEdit AppStore CI` and `OmnieEditFP AppStore CI`, signed by the Apple Distribution certificate stored in `IOS_DISTRIBUTION_P12_BASE64`.
 3. App Store Connect → Apps: create the app for bundle ID `ai.wckd.omnie.edit` (name, SKU, primary language) when it is not there yet. The file provider ships inside that app. There is no separate Connect record for `ai.wckd.omnie.edit.fileprovider`.
 4. App Store Connect → Users and Access → Integrations → App Store Connect API: create a key with the Admin or App Manager role so altool can upload. Download the `.p8` once. Apple does not show it again. Copy the Key ID and the Issuer ID into the three upload secrets above. The archive does not use this key.
-5. Confirm this repository can schedule the `xcode-27` runner. Until that label is available, the workflow cannot start.
+5. The workflow runs on GitHub-hosted `macos-15` and selects Xcode 16.4.
 6. After an upload, wait for processing in App Store Connect. `ITSAppUsesNonExemptEncryption` is already false. Add internal testers on the TestFlight page. External testing still goes through Beta App Review in App Store Connect. This workflow does not submit that review.
 
 ## Local export
 
-Day-to-day runs stay on automatic signing in the Xcode project. The committed `ExportOptions.plist` is the manual TestFlight export: it expects the Apple Distribution identity and both profiles to be installed, and it does not contact App Store Connect. Use `scripts/ci-testflight.sh` on the `xcode-27` runner for the upload. Do not pass `-allowProvisioningUpdates` or `-authenticationKeyPath` to that archive; Xcode 27 rejects the bearer token those flags request.
+Day-to-day runs stay on automatic signing in the Xcode project. The committed `ExportOptions.plist` is the manual TestFlight export: it expects the Apple Distribution identity and both profiles to be installed, and it does not contact App Store Connect. Use `scripts/ci-testflight.sh` on the `macos-15` runner (Xcode 16.4) for the upload. The script patches Release signing in the project for that archive and passes only global `xcodebuild` settings. Do not pass `-allowProvisioningUpdates` or `-authenticationKeyPath` to that archive, and do not pass `Target:`-prefixed signing settings; those per-target overrides are ignored and Xcode still asks for a Development profile.

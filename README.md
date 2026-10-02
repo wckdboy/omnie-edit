@@ -6,7 +6,7 @@ Unlocked files live in a shared app-group folder so another Omnie app on the sam
 
 ## Requirements
 
-- Xcode 16 or later for a local run. The TestFlight workflow uses the `xcode-27` runner.
+- Xcode 16 or later. The TestFlight workflow runs on `macos-15` and selects Xcode 16.4.
 - iOS 17 or later
 - Team `XKA8CGC2AB`, the same paid team as omnie-ios (`ai.wckd.omnie`), for the shared folder, the Files app provider, and TestFlight
 
@@ -36,7 +36,7 @@ That runs the logic tests: file names, the catalog contract, the document store,
 
 ## TestFlight
 
-TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs when you start it by hand, and when a tag that starts with `v` is pushed. It does not run on pull requests. The job uses the `xcode-27` runner, archives Release for `generic/platform=iOS`, exports with `ExportOptions.plist`, and uploads to App Store Connect.
+TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs when you start it by hand, and when a tag that starts with `v` is pushed. It does not run on pull requests. The job runs on `macos-15`, selects Xcode 16.4, archives Release for `generic/platform=iOS`, exports with `ExportOptions.plist`, and uploads to App Store Connect.
 
 To dispatch it:
 

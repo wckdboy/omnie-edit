@@ -1,3 +1,4 @@
+import OmnieEditCore
 import SwiftUI
 import UIKit
 
@@ -80,27 +81,32 @@ struct EditorTextView: UIViewRepresentable {
         textView.scrollRangeToVisible(range)
     }
 
+    /// Paints tokens and matches as text-storage attributes. UIKit's layout manager has no
+    /// temporary attributes (those are AppKit only), so the storage carries the colours and
+    /// `update` repaints after every change of text, tokens, matches, or palette.
     private func highlight(in textView: UITextView, font: UIFont, bold: UIFont) {
-        guard let layout = textView.layoutManager else { return }
-        let length = textView.textStorage.length
+        let storage = textView.textStorage
+        let length = storage.length
         let full = NSRange(location: 0, length: length)
-        layout.removeTemporaryAttribute(.foregroundColor, forCharacterRange: full)
-        layout.removeTemporaryAttribute(.backgroundColor, forCharacterRange: full)
-        layout.removeTemporaryAttribute(.font, forCharacterRange: full)
+        storage.beginEditing()
+        storage.removeAttribute(.backgroundColor, range: full)
+        storage.addAttribute(.foregroundColor, value: palette.text.uiColor, range: full)
+        storage.addAttribute(.font, value: font, range: full)
         for token in tokens {
             let range = NSRange(location: token.utf16Offset, length: token.utf16Length)
             guard range.location >= 0, NSMaxRange(range) <= length else { continue }
-            layout.addTemporaryAttribute(.foregroundColor, value: color(for: token.kind), forCharacterRange: range)
+            storage.addAttribute(.foregroundColor, value: color(for: token.kind), range: range)
             if token.kind == .keyword, palette.keywordBold {
-                layout.addTemporaryAttribute(.font, value: bold, forCharacterRange: range)
+                storage.addAttribute(.font, value: bold, range: range)
             }
         }
         for (index, match) in matches.enumerated() {
             let range = NSRange(location: match.utf16Location, length: match.utf16Length)
             guard range.location >= 0, NSMaxRange(range) <= length else { continue }
             let fill = index == currentMatch ? palette.currentMatch.uiColor : palette.match.uiColor
-            layout.addTemporaryAttribute(.backgroundColor, value: fill, forCharacterRange: range)
+            storage.addAttribute(.backgroundColor, value: fill, range: range)
         }
+        storage.endEditing()
     }
 
     private func color(for kind: SyntaxKind) -> UIColor {
@@ -220,7 +226,8 @@ final class LineNumberGutter: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let textView, let layoutManager = textView.layoutManager else { return }
+        guard let textView else { return }
+        let layoutManager = textView.layoutManager
         let storage = textView.textStorage.string as NSString
         let starts = cachedStarts(in: storage)
         let visible = textView.bounds

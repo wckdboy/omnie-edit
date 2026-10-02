@@ -17,6 +17,20 @@ struct RGBA: Equatable {
     }
 }
 
+// A palette entry is usable wherever a `Color` is: as a style (`foregroundStyle`, `tint`)
+// and as a view (`palette.background.ignoresSafeArea()`), the same way `Color` is both.
+extension RGBA: ShapeStyle {
+    func resolve(in environment: EnvironmentValues) -> Color.Resolved {
+        color.resolve(in: environment)
+    }
+}
+
+extension RGBA: View {
+    var body: some View {
+        color
+    }
+}
+
 struct Palette: Equatable {
     var background: RGBA
     var gutter: RGBA

@@ -16,6 +16,8 @@ No certificate, provisioning profile, or `.p8` belongs in this repository. `.git
 
 ## App Group
 
+Local builds: `group.app.omnie.edit` is registered on team `XKA8CGC2AB`, and the three entitlement files below now request it, so a build signed by Xcode on this team (development, or an automatic App Store export from this Mac) shares the container with Omnie (`ai.wckd.omnie`). The manual TestFlight workflow still carries profiles with empty app groups; regenerate `OmnieEdit AppStore CI` and `OmnieEditFP AppStore CI` with the group before using it again, and relax the omission checks in `scripts/ci-testflight.sh`.
+
 The shared-folder contract is still `group.app.omnie.edit`. `Sources/OmnieDocumentKit/OmnieContract.swift` uses that identifier, and `OmnieFileProvider/Info.plist` sets `NSExtensionFileProviderDocumentGroup` to it. Omnie (`ai.wckd.omnie`) would read `OmnieEdit/catalog.json` and `OmnieEdit/Documents/` from that container. Omnie Edit is the writer. When the entitlement is missing, `containerURL(forSecurityApplicationGroupIdentifier:)` returns nil and the editor keeps files in its private Application Support folder.
 
 The App Store profiles `OmnieEdit AppStore CI` and `OmnieEditFP AppStore CI` have empty app groups. A binary that requests `com.apple.security.application-groups` / `group.app.omnie.edit` will not sign with those profiles. These files therefore do not request the group:

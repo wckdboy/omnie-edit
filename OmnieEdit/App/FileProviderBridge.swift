@@ -12,12 +12,14 @@ enum FileProviderBridge {
     }
 
     static func registerIfNeeded() {
-        NSFileProviderManager.getDomains { domains, _ in
-            let identifier = domain.identifier
-            if domains.contains(where: { $0.identifier == identifier }) {
+        // The iOS 27 SDK exposes the domain list only as the async `domains()`.
+        let domain = self.domain
+        Task {
+            let existing = (try? await NSFileProviderManager.domains()) ?? []
+            if existing.contains(where: { $0.identifier == domain.identifier }) {
                 return
             }
-            NSFileProviderManager.add(domain, completionHandler: nil)
+            try? await NSFileProviderManager.add(domain)
         }
     }
 

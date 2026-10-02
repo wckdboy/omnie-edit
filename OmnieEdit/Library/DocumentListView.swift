@@ -263,9 +263,9 @@ enum LibraryRoute: Hashable {
 enum ByteCount {
     static func string(_ count: Int64) -> String {
         switch count {
-        case ..<1024:
+        case ..<Int64(1024):
             return "\(count) B"
-        case ..<1024 * 1024:
+        case ..<Int64(1024 * 1024):
             return String(format: "%.0f KB", Double(count) / 1024)
         default:
             let megabytes = Double(count) / 1024 / 1024

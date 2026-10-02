@@ -6,9 +6,9 @@ Unlocked files live in a shared app-group folder so another Omnie app on the sam
 
 ## Requirements
 
-- Xcode 16 or later
+- Xcode 16 or later for a local run. The TestFlight workflow uses the `xcode-27` runner.
 - iOS 17 or later
-- An Apple Developer team on the same account as omnie-ios, if you want the shared folder and the Files app provider
+- Team `XKA8CGC2AB`, the same paid team as omnie-ios (`ai.wckd.omnie`), for the shared folder, the Files app provider, and TestFlight
 
 The editor still runs if the app group is not entitled yet. In that case files stay in the app’s private Application Support folder, and Settings says so.
 
@@ -16,8 +16,8 @@ The editor still runs if the app group is not entitled yet. In that case files s
 
 1. Open `OmnieEdit.xcodeproj`.
 2. Select the **OmnieEdit** scheme and an iPhone simulator or a device.
-3. On the OmnieEdit and OmnieFileProvider targets, set your team under Signing & Capabilities.
-4. Confirm both targets use the App Group `group.app.omnie.edit` (the entitlements files already request it). Create that group on the developer account if Xcode asks.
+3. Signing is automatic for team `XKA8CGC2AB` on OmnieEdit, OmnieFileProvider, and OmnieEditTests. The bundle IDs are `ai.wckd.omnie.edit`, `ai.wckd.omnie.edit.fileprovider`, and `ai.wckd.omnie.edit.tests`.
+4. Confirm the app and the file provider use the App Group `group.app.omnie.edit` (the entitlements files already request it). Create that group on the developer account, and enable it on the Omnie and Omnie Edit App IDs, if Xcode asks. The portal steps are in `SIGNING.md`.
 5. Run.
 
 Debug builds of the file provider include `com.apple.developer.fileprovider.testing-mode` so the domain can load before the account has the production File Provider capability. `OmnieFileProvider/Release.entitlements` does not include that key. Use the Release entitlements for an App Store archive.
@@ -33,6 +33,19 @@ swift test
 ```
 
 That runs the logic tests: file names, the catalog contract, the document store, lock and session policy, settings, search, and syntax highlighting. In Xcode, Product > Test runs the same files on the iOS simulator.
+
+## TestFlight
+
+TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs when you start it by hand, and when a tag that starts with `v` is pushed. It does not run on pull requests. The job uses the `xcode-27` runner, archives Release for `generic/platform=iOS`, exports with `ExportOptions.plist`, and uploads to App Store Connect.
+
+To dispatch it:
+
+1. Open Actions for this repository, choose **TestFlight**, and run the workflow on the branch you want archived.
+2. Or push a tag such as `v1.0.0`.
+
+The workflow reads three Actions secrets: `APP_STORE_CONNECT_API_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, and `APP_STORE_CONNECT_API_KEY`. It does not put those values in git. Team, bundle IDs, the App Group on the Omnie and Omnie Edit App IDs, and the App Store Connect app for `ai.wckd.omnie.edit` are described in `SIGNING.md`. The steps that create the App IDs, the Connect app, and the API key stay outside this repository.
+
+The uploaded build keeps `ITSAppUsesNonExemptEncryption` false. Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`. The app still has no network client and no analytics SDK.
 
 ## What the editor does
 
@@ -156,6 +169,10 @@ OmnieEdit/                     SwiftUI app
 OmnieFileProvider/             Read-only File Provider extension
 Tests/OmnieEditCoreTests/      Unit tests
 Contract/catalog.example.json  Fixture for the catalog schema
+ExportOptions.plist            App Store export options for team XKA8CGC2AB
+SIGNING.md                     Team, bundles, App Group, Connect steps
+scripts/ci-testflight.sh       Archive, export, and upload a signed Release build
+.github/workflows/testflight.yml  Manual and v* TestFlight upload
 ```
 
 ## Roadmap
@@ -168,8 +185,4 @@ Contract/catalog.example.json  Fixture for the catalog schema
 
 ## Out of scope for v1
 
-Cloud sync, collaboration, accounts, AI chat, analytics, Mac Catalyst, and App Store Connect or TestFlight wiring.
-
-## TestFlight
-
-TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs on `workflow_dispatch` and on tags starting with `v`. It does not run on pull requests. The job uses the `xcode-27` runner. Secrets and portal steps are in `SIGNING.md`.
+Cloud sync, collaboration, accounts, AI chat, analytics, and Mac Catalyst.

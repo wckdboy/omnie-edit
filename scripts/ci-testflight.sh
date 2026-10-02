@@ -8,8 +8,8 @@
 # Required environment (Actions secrets; see SIGNING.md):
 #   APP_STORE_CONNECT_API_KEY_ID
 #   APP_STORE_CONNECT_ISSUER_ID
-#   APP_STORE_CONNECT_API_KEY     contents of the .p8
-#   OMNIE_BUILD_NUMBER            integer CFBundleVersion for this upload
+#   APP_STORE_CONNECT_API_KEY    contents of the .p8
+#   OMNIE_BUILD_NUMBER           integer CFBundleVersion for this upload
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

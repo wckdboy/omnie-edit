@@ -7,13 +7,13 @@ struct OmnieEditApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(model: model)
+            DocumentListView(model: model)
                 .preferredColorScheme(preferredScheme)
                 .onChange(of: scenePhase) { _, phase in
                     model.handle(scenePhase: phase)
                 }
                 .onOpenURL { url in
-                    model.importFile(at: url)
+                    _ = model.openPickedFile(url)
                 }
         }
     }
@@ -28,30 +28,4 @@ struct OmnieEditApp: App {
             return .dark
         }
     }
-}
-
-struct RootView: View {
-    @Bindable var model: AppModel
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        let palette = Palette.resolve(model.settings.theme, colorScheme)
-        ZStack {
-            if model.gate.needsAppUnlock {
-                LockScreen(model: model)
-            } else {
-                DocumentListView(model: model)
-                if model.gate.privacyCover {
-                    PrivacyShield()
-                }
-            }
-        }
-        .environment(\.palette, palette)
-        .tint(palette.text)
-        .background(palette.background.ignoresSafeArea())
-    }
-}
-
-extension Notification.Name {
-    static let omnieFlushSaves = Notification.Name("omnie.flushSaves")
 }

@@ -1,190 +1,59 @@
-# Omnie-edit
+# Omnie Edit
 
-Omnie-edit is a minimal text and source editor for iPhone. It is a quiet place to open a file, change it, and leave. It is not a notes suite, and it does not sync.
+Omnie Edit is a focused, real-file code and text editor for iPhone. It opens files and project folders from the system document picker, edits them in place, and keeps recent locations as security-scoped bookmarks. There is no required account and no private document database.
 
-Unlocked files live in a shared app-group folder so another Omnie app on the same iPhone, including **omnie-ios**, can list them and read their contents. Nothing in this app opens a network connection. There is no analytics SDK.
+The project is being rebuilt from `BUILD_PLAN.md`. The current vertical slice includes:
+
+- Real UTF-8 file access through `NSFileCoordinator`.
+- Recent files and project folders without copying user content.
+- One-level project navigation with `.gitignore` support and a hidden `.git` directory.
+- Create, rename, duplicate, and confirmed recursive delete operations.
+- Runestone editing with Tree-sitter highlighting for the v1 language set.
+- Up to eight tabs, debounced autosave, native find, go-to-line, undo/redo, and Markdown preview.
+- Right-handed controls by default, with a mirrored left-handed mode.
+- Local Git repository detection and creation, status, whole-file staging, diff, commit, and confirmed discard.
+
+Remote Git authentication, clone, pull, and push are planned for the build plan’s v1.1 milestone.
 
 ## Requirements
 
-- Xcode 16 or later. The TestFlight workflow runs on `macos-15` and selects Xcode 16.4.
-- iOS 17 or later
-- Team `XKA8CGC2AB`, the same paid team as omnie-ios (`ai.wckd.omnie`), for the shared folder, the Files app provider, and TestFlight
+- Xcode 27 or later
+- iOS 18 or later
 
-The editor still runs if the app group is not entitled yet. In that case files stay in the app’s private Application Support folder, and Settings says so.
+## Local development
 
-## Run
+1. Open `OmnieEdit.xcodeproj` in Xcode.
+2. Select the `OmnieEdit` scheme and an iPhone simulator or device.
+3. Build and run.
 
-1. Open `OmnieEdit.xcodeproj`.
-2. Select the **OmnieEdit** scheme and an iPhone simulator or a device.
-3. Signing is automatic for team `XKA8CGC2AB` on OmnieEdit, OmnieFileProvider, and OmnieEditTests. The bundle IDs are `ai.wckd.omnie.edit`, `ai.wckd.omnie.edit.fileprovider`, and `ai.wckd.omnie.edit.tests`.
-4. The committed entitlements do not request App Group `group.app.omnie.edit`. The App Store profiles used by TestFlight have empty app groups, so the entitlement is omitted and files stay in the app’s private Application Support folder. `SIGNING.md` describes what has to change before the shared folder is available.
-5. Run.
+No remote repository or hosted CI service is required. Product > Test runs the unit suite locally.
 
-Debug builds of the file provider include `com.apple.developer.fileprovider.testing-mode` so the domain can load before the account has the production File Provider capability. `OmnieFileProvider/Release.entitlements` does not include that key. Use the Release entitlements for an App Store archive.
+## Architecture
 
-Hardware keyboard shortcuts in the editor: Command-F finds, Command-S saves.
+- `OmnieEdit/` contains the SwiftUI application and its observable app model.
+- `Sources/OmnieEditCore/Workspace.swift` owns bookmark, coordinated-I/O, recents, and project-file behavior.
+- `Sources/OmnieEditCore/RunestoneCodeEditor.swift` is the single Runestone integration boundary.
+- `Tests/OmnieEditCoreTests/` contains deterministic file-system and editing tests.
 
-## Tests
+The app stores bookmark metadata and preferences in `UserDefaults`. File contents remain at the URLs selected by the user. File access must flow through `WorkspaceBookmark`, `CoordinatedTextFile`, or `ProjectFileSystem`; UI code should not add ad-hoc reads and writes.
 
-From the repository root, with Swift 5.9 or later:
+## Dependencies
 
-```sh
-swift test
-```
+- [Runestone](https://github.com/simonbs/Runestone) — editor engine, MIT licensed.
+- [TreeSitterLanguages](https://github.com/simonbs/TreeSitterLanguages) — Runestone language adapters, MIT licensed.
+- [SwiftGitX](https://github.com/ibrahimcetin/SwiftGitX) — Swift Git API, MIT licensed.
+- [libgit2](https://libgit2.org/) — Git implementation, GPL-2.0-only with a linking exception.
 
-That runs the logic tests: file names, the catalog contract, the document store, lock and session policy, settings, search, and syntax highlighting. In Xcode, Product > Test runs the same files on the iOS simulator.
+Dependency notices are recorded in `THIRD_PARTY_NOTICES.md`. Dependencies are declared in `Package.swift` and resolved by Xcode/Swift Package Manager.
 
-## TestFlight
+## Contributing
 
-TestFlight is in scope. `.github/workflows/testflight.yml` archives the **OmnieEdit** scheme and uploads it. The workflow runs when you start it by hand, and when a tag that starts with `v` is pushed. It does not run on pull requests. The job runs on `macos-15`, selects Xcode 16.4, archives Release for `generic/platform=iOS`, exports with `ExportOptions.plist`, and uploads to App Store Connect.
+See `CONTRIBUTING.md`. New behavior should have focused tests, descriptive names, and comments only where the reason is not obvious from the code.
 
-To dispatch it:
+## Privacy
 
-1. Open Actions for this repository, choose **TestFlight**, and run the workflow on the branch you want archived.
-2. Or push a tag such as `v1.0.0`.
+See `PRIVACY.md`. Omnie Edit does not require an account and does not include analytics or advertising SDKs.
 
-The workflow signs manually with the Apple Distribution certificate and the two App Store profiles (`IOS_DISTRIBUTION_P12_BASE64`, `IOS_DISTRIBUTION_P12_PASSWORD`, `PROVISION_OMNIE_EDIT_BASE64`, `PROVISION_OMNIE_EDIT_FP_BASE64`), then uploads the IPA with `APP_STORE_CONNECT_API_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, and `APP_STORE_CONNECT_API_KEY`. It does not put those values in git, and the archive does not send the API key to `xcodebuild`. Team, bundle IDs, profiles, and the App Store Connect app for `ai.wckd.omnie.edit` are described in `SIGNING.md`. The steps that create the App IDs, the certificate, the profiles, the Connect app, and the API key stay outside this repository.
+## License
 
-The uploaded build keeps `ITSAppUsesNonExemptEncryption` false. Release file-provider entitlements omit `com.apple.developer.fileprovider.testing-mode`. The app still has no network client and no analytics SDK.
-
-## What the editor does
-
-- Create, import, rename, and delete UTF-8 text and source files.
-- Edit with a monospace font (proportional is available), optional line numbers, soft wrap, and find-in-file.
-- Highlight Swift, Python, JavaScript, TypeScript, JSON, HTML, CSS, shell, Go, Rust, C, C++, Ruby, YAML, SQL, TOML, and Markdown. The highlighter is in the app. There is no third-party parsing library.
-- Autosave shortly after you stop typing, and save explicitly from the menu. A dot beside the file name means the buffer is unsaved. Leaving the editor or switching away flushes the buffer.
-- Share a copy, or import from Files. “Open in Omnie-edit” copies the file in. v1 does not edit documents in place outside its own folder.
-- Theme: system, light, dark, or monochrome. Font size, default extension, line numbers, wrap, and monospace are in Settings.
-- Optional Face ID or device passcode to open the app. Optional per-file lock.
-
-## Privacy and security
-
-Omnie-edit does not ship a network client, an analytics SDK, or an account system. It does not use the Keychain in v1.
-
-**Data Protection.** Every save asks for `NSFileProtectionComplete` (`Data.WritingOptions.completeFileProtection`, and the same class on the file). The file is encrypted by iOS and cannot be read while the device is locked. That applies to Omnie-edit, to omnie-ios, and to the File Provider. If a save fails because the device locked mid-edit, the buffer stays dirty.
-
-**App lock.** Opt in under Settings. After the app goes to the background, the next open requires Face ID, Touch ID, or the device passcode (`LAPolicy.deviceOwnerAuthentication`). While the system is capturing an app-switcher snapshot, the editor is covered. The lock is a gate on this app’s interface. It does not hide the shared folder from a peer that is entitled to the app group.
-
-**Per-file lock.** Locking a file moves it out of the shared folder into the app-private container and drops it from `catalog.json`. omnie-ios cannot list or read it. Unlocking requires Face ID or the passcode, then moves the same document id back into the shared folder. This is not a second encryption password. The cryptographic boundary is Data Protection plus who is allowed into the app group. Prefer not to add unrelated apps to `group.app.omnie.edit`.
-
-**Backup.** Files are excluded from device backup by default, including iCloud Backup. Turn on “Include in device backup” if you want the system backup to keep them. Omnie-edit still does not upload anything itself.
-
-**Privacy manifest.** `PrivacyInfo.xcprivacy` declares no tracking and no collected data. The only required-reason APIs are UserDefaults (settings) and file timestamps (the modified date shown in the list).
-
-## Local API for omnie-ios
-
-This is the v1 contract. Omnie-edit is the only writer. Peers read.
-
-### Entitlement
-
-Both apps, same team, once the App IDs and profiles include the group:
-
-```xml
-<key>com.apple.security.application-groups</key>
-<array>
-  <string>group.app.omnie.edit</string>
-</array>
-```
-
-The entitlements files in this repository do not include that key. The TestFlight profiles have empty app groups, so requesting it would fail signing. See `SIGNING.md`.
-
-### On disk
-
-Paths are relative to the app group container:
-
-```text
-OmnieEdit/catalog.json
-OmnieEdit/Documents/<file name>
-```
-
-`catalog.json` is replaced atomically. v1 is a flat directory: `relativePath` is a single path component. Reject `.`, `..`, separators, leading dots, and control characters.
-
-Dates are ISO-8601 in UTC (`2026-10-02T18:00:00Z`). Text is UTF-8. A leading UTF-8 BOM is stripped on read. Unknown JSON keys may be added without a version bump; decoders ignore them. A different `contractVersion` is a breaking change and must be rejected.
-
-Sort, if you do not use the helper: `modifiedAt` descending, then `name` case-insensitive, then `id`.
-
-An example document is in `Contract/catalog.example.json`.
-
-```json
-{
-  "contractVersion": 1,
-  "generatedAt": "2026-10-02T18:00:01Z",
-  "documents": [
-    {
-      "id": "7f2c9c2e-1b4a-4e0a-9c11-6a1d0e5b9a10",
-      "name": "ContentView.swift",
-      "extension": "swift",
-      "relativePath": "ContentView.swift",
-      "byteCount": 42,
-      "modifiedAt": "2026-10-02T18:00:00Z"
-    }
-  ]
-}
-```
-
-Entries whose path is unsafe, or whose file is missing, are skipped. Do not follow a tampered `relativePath` outside `Documents`.
-
-### Swift package
-
-Link the **OmnieDocumentKit** product from this package. Do not link **OmnieEditCore** from omnie-ios. That module creates, renames, locks, and writes, and those mutations are not part of the peer contract.
-
-```swift
-import OmnieDocumentKit
-
-let root = try OmnieContract.requireSharedRoot()
-let catalog = OmnieDocumentCatalog(rootURL: root)
-let documents = try catalog.list()
-let source = try catalog.read(id: documents[0].id)
-let fileURL = try catalog.fileURL(id: documents[0].id)
-```
-
-`requireSharedRoot()` throws `OmnieDocumentError.appGroupUnavailable` when the entitlement is missing. `list()` throws `unsupportedContractVersion` when `contractVersion` is not `1` (`OmnieContract.version`).
-
-Stable ids survive rename. The id is the string in `catalog.json`, not the file name.
-
-### File Provider
-
-Omnie-edit registers a File Provider domain:
-
-- Identifier: `app.omnie.edit.documents`
-- Display name: Omnie-edit
-
-The extension is a read-only projection of the same catalog, so the Files app can browse unlocked files. Create, modify, and delete from Files are refused. omnie-ios should call `OmnieDocumentCatalog` rather than driving the File Provider.
-
-The domain appears after a signed build has registered it. Until the app group exists, there is nothing for the provider to serve.
-
-### What peers must not do in v1
-
-- Write `catalog.json` or files under `OmnieEdit/Documents`.
-- Read the app-private locked-file folder. It is not in the app group.
-- Treat a missing file or a skipped catalog entry as permission to scan parent directories.
-
-A later contract version can add an explicit write API. It should be a version bump, not a silent extra writer.
-
-## Project layout
-
-```text
-Package.swift                  OmnieDocumentKit and OmnieEditCore
-Sources/OmnieDocumentKit/      Shared read contract
-Sources/OmnieEditCore/         Store, settings, lock policy, search, highlighter
-OmnieEdit/                     SwiftUI app
-OmnieFileProvider/             Read-only File Provider extension
-Tests/OmnieEditCoreTests/      Unit tests
-Contract/catalog.example.json  Fixture for the catalog schema
-ExportOptions.plist            App Store export options for team XKA8CGC2AB
-SIGNING.md                     Team, bundles, App Group, Connect steps
-scripts/ci-testflight.sh       Archive, export, and upload a signed Release build
-.github/workflows/testflight.yml  Manual and v* TestFlight upload
-```
-
-## Roadmap
-
-- Folders, with a contract bump so `relativePath` may contain `/`.
-- omnie-ios adopting `OmnieDocumentKit` for list and read.
-- An explicit, versioned write path if a peer needs to create files.
-- Richer find (regular expressions) and external-keyboard cursor commands.
-- In-place editing of files that live outside the shared folder.
-
-## Out of scope for v1
-
-Cloud sync, collaboration, accounts, AI chat, analytics, and Mac Catalyst.
+Omnie Edit is available under the MIT License. See `LICENSE`.

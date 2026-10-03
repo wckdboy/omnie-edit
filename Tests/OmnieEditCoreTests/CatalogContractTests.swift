@@ -1,6 +1,5 @@
 import XCTest
 import OmnieDocumentKit
-import OmnieEditCore
 
 final class CatalogContractTests: XCTestCase {
     func testExampleCatalogDecodes() throws {
@@ -60,33 +59,6 @@ final class CatalogContractTests: XCTestCase {
         let listed = try OmnieDocumentCatalog(rootURL: root).list()
         XCTAssertTrue(listed.isEmpty)
         XCTAssertThrowsError(try OmnieDocumentCatalog(rootURL: root).fileURL(relativePath: "../secret"))
-    }
-
-    func testPeerReadsWhatTheStoreWritesAndLosesLockedFiles() throws {
-        let shared = try makeRoot()
-        let privateRoot = try makeRoot()
-        let store = DocumentStore(sharedRoot: shared, privateRoot: privateRoot)
-        try store.prepare()
-        let created = try store.create(name: "App.swift", contents: "let a = 1\n", now: Date(timeIntervalSince1970: 1_700_000_000))
-        let peer = OmnieDocumentCatalog(rootURL: shared)
-        let listed = try peer.list()
-        XCTAssertEqual(listed.map(\.id), [created.id])
-        XCTAssertEqual(try peer.read(id: created.id), "let a = 1\n")
-        let payload = try Data(contentsOf: peer.catalogFileURL)
-        let decoded = try OmnieJSON.decoder().decode(OmnieCatalog.self, from: payload)
-        XCTAssertEqual(decoded.contractVersion, 1)
-        XCTAssertEqual(decoded.documents[0].relativePath, "App.swift")
-
-        try store.lock(id: created.id)
-        XCTAssertTrue(try peer.list().isEmpty)
-        XCTAssertThrowsError(try peer.read(id: created.id)) { error in
-            XCTAssertEqual(error as? OmnieDocumentError, .documentNotFound(id: created.id))
-        }
-        XCTAssertEqual(try store.read(id: created.id), "let a = 1\n")
-
-        let unlocked = try store.unlock(id: created.id)
-        XCTAssertEqual(unlocked.id, created.id)
-        XCTAssertEqual(try peer.read(id: created.id), "let a = 1\n")
     }
 
     private func makeRoot() throws -> URL {

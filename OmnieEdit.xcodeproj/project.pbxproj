@@ -1,52 +1,33 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {};
-	objectVersion = 56;
+	classes = {
+	};
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0FD3EB6AC5064D2DDD69D6CA /* OmnieEditApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */; };
 		0084AB7A0C01D74E8F9C8B5F /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D38FC78EC6ACDCF4B1E5C8C /* AppModel.swift */; };
-		2BB2673176A5E4E007B469E1 /* FileProviderBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2881621CD0823D93E844D1E /* FileProviderBridge.swift */; };
-		724234B42D792A4DB3E1173F /* DeviceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2128E2CE0B17F6ACB0FF65 /* DeviceAuthenticator.swift */; };
-		BE83A9EFB91A27501954585E /* LockScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DE407DC02337A921E73CE4 /* LockScreen.swift */; };
-		D9F82001BF27F979BB0A12FA /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196EBD7B70CA46DD819E571C /* Palette.swift */; };
-		7A9F7F01BED232F2DE7DECCF /* EditorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F01385DB617C5B0294011 /* EditorModel.swift */; };
-		762AF43A4C7ACE04CAC84DA4 /* FindBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA0638B0B5EC82A44F75098 /* FindBar.swift */; };
-		9BFC0CB80EEA0C6AC1809C76 /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA2580BB31A09F0B1558580 /* EditorTextView.swift */; };
-		B3889AE3C48136F115B8F47B /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A40855BAD0F3818AA3D293A /* EditorView.swift */; };
+		0FD3EB6AC5064D2DDD69D6CA /* OmnieEditApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */; };
 		12F4EE8769B8F42172BE9F61 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CBDE780A9FD607584E153 /* ActivityView.swift */; };
-		3E39B08A40DE0E1CADBFFFA7 /* NewDocumentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF9C468BAB98A2F987B33B0 /* NewDocumentSheet.swift */; };
-		62409A830F399BFB32805ED3 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005D7502A3179FECF8D670C2 /* DocumentListView.swift */; };
-		5D0B2D94A94E4180CAF92FF2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A2FA2CAA8EED4D8766D393 /* SettingsView.swift */; };
-		8D1CFDF2B35D49066B531E3C /* Assets.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 9E261DBC12F0A1449D86CFB3 /* Assets.xcassets */; };
-		CEA25B6FCC53E504A4670648 /* PrivacyInfo.xcprivacy in Sources */ = {isa = PBXBuildFile; fileRef = EB719B09924014392BA3815E /* PrivacyInfo.xcprivacy */; };
-		631559B770DC21A0F9726762 /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE337C7B5C318E6A118D68C /* FileProviderExtension.swift */; };
-		ECC3E97A57C4CB13D521440D /* FileProviderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1486F3EA1187D6786258C69 /* FileProviderItem.swift */; };
-		EC83C56B2F8FE4CDC0D4E8D9 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D237ABEFFEF82EC20473C4 /* FileProviderEnumerator.swift */; };
-		4B58B4B0578CCD6CDD0388B1 /* PrivacyInfo.xcprivacy in Sources */ = {isa = PBXBuildFile; fileRef = FC881196B44E3D0629A5AC28 /* PrivacyInfo.xcprivacy */; };
 		13B1912055952DDA9C6683E8 /* CatalogContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866F3C49BC0F9DF2B3C2031 /* CatalogContractTests.swift */; };
-		0CF94FA67A7AFB02D9BED7F6 /* DocumentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64CB2B7285313FAD6C67879D /* DocumentStoreTests.swift */; };
-		A58889E277F5F5F122665AE7 /* EditingLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A87AA1E7ADB334FE236C91B /* EditingLogicTests.swift */; };
 		18B5152F6BD4F06F16B88424 /* OmnieFileNameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB75934450D92A43B4AB7769 /* OmnieFileNameTests.swift */; };
+		5D0B2D94A94E4180CAF92FF2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A2FA2CAA8EED4D8766D393 /* SettingsView.swift */; };
+		62409A830F399BFB32805ED3 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005D7502A3179FECF8D670C2 /* DocumentListView.swift */; };
 		69343A199C74010E97F97A00 /* SessionAndSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E4E71DAC0F8F6DF6BCC5FE /* SessionAndSettingsTests.swift */; };
+		8D1CFDF2B35D49066B531E3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E261DBC12F0A1449D86CFB3 /* Assets.xcassets */; };
+		9CF46B2A30716F7600D64A73 /* GitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF46B2930716F7600D64A73 /* GitView.swift */; };
+		9CF46B4A3071A8D100D64A73 /* WorkspaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF46B493071A8D100D64A73 /* WorkspaceTests.swift */; };
 		9ECD130C6F11F210A93DB889 /* OmnieEditCore in Frameworks */ = {isa = PBXBuildFile; productRef = AACC75FCC42674A9CCAA6349 /* OmnieEditCore */; };
-		E19D0F8D38E5D7F06A6D8B4B /* OmnieDocumentKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6DCFE345BFEF77F946E3550B /* OmnieDocumentKit */; };
-		75C697469F1D35E64020EA19 /* OmnieDocumentKit in Frameworks */ = {isa = PBXBuildFile; productRef = 473FC7F2408515D59160846F /* OmnieDocumentKit */; };
+		B3889AE3C48136F115B8F47B /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A40855BAD0F3818AA3D293A /* EditorView.swift */; };
+		CEA25B6FCC53E504A4670648 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EB719B09924014392BA3815E /* PrivacyInfo.xcprivacy */; };
+		D9F82001BF27F979BB0A12FA /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196EBD7B70CA46DD819E571C /* Palette.swift */; };
 		DB7C19BC803557E57647AC3D /* OmnieEditCore in Frameworks */ = {isa = PBXBuildFile; productRef = C7E68D88B6B6EC86E3F2D243 /* OmnieEditCore */; };
+		E19D0F8D38E5D7F06A6D8B4B /* OmnieDocumentKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6DCFE345BFEF77F946E3550B /* OmnieDocumentKit */; };
 		E60DF4C6B3BEDCDC46AD5279 /* OmnieDocumentKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5B9E75F2495F652798B2AEF9 /* OmnieDocumentKit */; };
-		4DDBC2DBDFDAB44B4EB6BA44 /* OmnieFileProvider.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C5F406EF884F0E1085CC1091 /* OmnieFileProvider.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D799BAE6088A90139B415FCC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9831A0ED7992645038323751;
-			remoteInfo = OmnieFileProvider;
-		};
 		78AF9CBC92B2B17C537164D6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
@@ -63,7 +44,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				4DDBC2DBDFDAB44B4EB6BA44 /* OmnieFileProvider.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,80 +51,79 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B6CDB6E5D160E013280D3C68 /* OmnieEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OmnieEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5F406EF884F0E1085CC1091 /* OmnieFileProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OmnieFileProvider.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A8D8270AA6DB8732282C9541 /* OmnieEditTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OmnieEditTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmnieEditApp.swift; sourceTree = "<group>"; };
-		1D38FC78EC6ACDCF4B1E5C8C /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
-		F2881621CD0823D93E844D1E /* FileProviderBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderBridge.swift; sourceTree = "<group>"; };
-		0C2128E2CE0B17F6ACB0FF65 /* DeviceAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAuthenticator.swift; sourceTree = "<group>"; };
-		04DE407DC02337A921E73CE4 /* LockScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreen.swift; sourceTree = "<group>"; };
-		196EBD7B70CA46DD819E571C /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
-		AC9F01385DB617C5B0294011 /* EditorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorModel.swift; sourceTree = "<group>"; };
-		5DA0638B0B5EC82A44F75098 /* FindBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBar.swift; sourceTree = "<group>"; };
-		0CA2580BB31A09F0B1558580 /* EditorTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
-		5A40855BAD0F3818AA3D293A /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
-		065CBDE780A9FD607584E153 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
-		ECF9C468BAB98A2F987B33B0 /* NewDocumentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDocumentSheet.swift; sourceTree = "<group>"; };
 		005D7502A3179FECF8D670C2 /* DocumentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentListView.swift; sourceTree = "<group>"; };
+		065CBDE780A9FD607584E153 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		18D237ABEFFEF82EC20473C4 /* FileProviderEnumerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderEnumerator.swift; sourceTree = "<group>"; };
+		196EBD7B70CA46DD819E571C /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
+		1D38FC78EC6ACDCF4B1E5C8C /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmnieEditApp.swift; sourceTree = "<group>"; };
+		487F8D9C484086EC94E55885 /* Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Debug.entitlements; sourceTree = "<group>"; };
+		5A40855BAD0F3818AA3D293A /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		5B3027C49DC697B78B35D52C /* OmnieEdit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OmnieEdit.entitlements; sourceTree = "<group>"; };
+		5F997AFBF16B2B00F89372CD /* Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
+		74E4E71DAC0F8F6DF6BCC5FE /* SessionAndSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAndSettingsTests.swift; sourceTree = "<group>"; };
 		95A2FA2CAA8EED4D8766D393 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9CF46B2930716F7600D64A73 /* GitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitView.swift; sourceTree = "<group>"; };
+		9CF46B2B3071707000D64A73 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
+		9CF46B493071A8D100D64A73 /* WorkspaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceTests.swift; sourceTree = "<group>"; };
 		9E261DBC12F0A1449D86CFB3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A5B1E2B41F7CB0B28EB828D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A8D8270AA6DB8732282C9541 /* OmnieEditTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OmnieEditTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB75934450D92A43B4AB7769 /* OmnieFileNameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmnieFileNameTests.swift; sourceTree = "<group>"; };
+		B6CDB6E5D160E013280D3C68 /* OmnieEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OmnieEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1486F3EA1187D6786258C69 /* FileProviderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderItem.swift; sourceTree = "<group>"; };
+		DF9244BF5B0E81F3A99287FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E866F3C49BC0F9DF2B3C2031 /* CatalogContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogContractTests.swift; sourceTree = "<group>"; };
 		EB719B09924014392BA3815E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FBE337C7B5C318E6A118D68C /* FileProviderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderExtension.swift; sourceTree = "<group>"; };
-		C1486F3EA1187D6786258C69 /* FileProviderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderItem.swift; sourceTree = "<group>"; };
-		18D237ABEFFEF82EC20473C4 /* FileProviderEnumerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderEnumerator.swift; sourceTree = "<group>"; };
 		FC881196B44E3D0629A5AC28 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E866F3C49BC0F9DF2B3C2031 /* CatalogContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogContractTests.swift; sourceTree = "<group>"; };
-		64CB2B7285313FAD6C67879D /* DocumentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStoreTests.swift; sourceTree = "<group>"; };
-		9A87AA1E7ADB334FE236C91B /* EditingLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingLogicTests.swift; sourceTree = "<group>"; };
-		AB75934450D92A43B4AB7769 /* OmnieFileNameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmnieFileNameTests.swift; sourceTree = "<group>"; };
-		74E4E71DAC0F8F6DF6BCC5FE /* SessionAndSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAndSettingsTests.swift; sourceTree = "<group>"; };
-		DF9244BF5B0E81F3A99287FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5B3027C49DC697B78B35D52C /* OmnieEdit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OmnieEdit.entitlements; sourceTree = "<group>"; };
-		A5B1E2B41F7CB0B28EB828D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		487F8D9C484086EC94E55885 /* Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Debug.entitlements; sourceTree = "<group>"; };
-		5F997AFBF16B2B00F89372CD /* Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXGroup section */
-		F3E47AD32B18086981DC8959 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */,
-				1D38FC78EC6ACDCF4B1E5C8C /* AppModel.swift */,
-				F2881621CD0823D93E844D1E /* FileProviderBridge.swift */,
+/* Begin PBXFrameworksBuildPhase section */
+		96C8A1040BEA52B0A710C717 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB7C19BC803557E57647AC3D /* OmnieEditCore in Frameworks */,
+				E60DF4C6B3BEDCDC46AD5279 /* OmnieDocumentKit in Frameworks */,
 			);
-			path = App;
-			sourceTree = "<group>";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E807F088A59AC0FB013D6094 /* Editor */ = {
+		DC5E72DCDAFA3A0962FBEC53 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9ECD130C6F11F210A93DB889 /* OmnieEditCore in Frameworks */,
+				E19D0F8D38E5D7F06A6D8B4B /* OmnieDocumentKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00C45FD35CB0F9C5F764F070 = {
 			isa = PBXGroup;
 			children = (
-				AC9F01385DB617C5B0294011 /* EditorModel.swift */,
-				5DA0638B0B5EC82A44F75098 /* FindBar.swift */,
-				0CA2580BB31A09F0B1558580 /* EditorTextView.swift */,
-				5A40855BAD0F3818AA3D293A /* EditorView.swift */,
+				B6CDB6E5D160E013280D3C68 /* OmnieEdit.app */,
+				A8D8270AA6DB8732282C9541 /* OmnieEditTests.xctest */,
 			);
-			path = Editor;
 			sourceTree = "<group>";
 		};
 		23DF4B0303069D41F28B7C75 /* Library */ = {
 			isa = PBXGroup;
 			children = (
 				065CBDE780A9FD607584E153 /* ActivityView.swift */,
-				ECF9C468BAB98A2F987B33B0 /* NewDocumentSheet.swift */,
 				005D7502A3179FECF8D670C2 /* DocumentListView.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
 		};
-		A6BCDDDF9CCFF505CCBFCC77 /* Security */ = {
+		4B5FD979CAEAA85065BA98BD /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				0C2128E2CE0B17F6ACB0FF65 /* DeviceAuthenticator.swift */,
-				04DE407DC02337A921E73CE4 /* LockScreen.swift */,
+				7044B98E5D8782DA37E4768C /* OmnieEditCoreTests */,
 			);
-			path = Security;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		68EABC6069EEEA08A7C571A5 /* Settings */ = {
@@ -155,12 +134,57 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		7044B98E5D8782DA37E4768C /* OmnieEditCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				E866F3C49BC0F9DF2B3C2031 /* CatalogContractTests.swift */,
+				AB75934450D92A43B4AB7769 /* OmnieFileNameTests.swift */,
+				74E4E71DAC0F8F6DF6BCC5FE /* SessionAndSettingsTests.swift */,
+				9CF46B493071A8D100D64A73 /* WorkspaceTests.swift */,
+			);
+			path = OmnieEditCoreTests;
+			sourceTree = "<group>";
+		};
 		76EF40DEA83464D608105E04 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
 				196EBD7B70CA46DD819E571C /* Palette.swift */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		9CF46B2630716F4400D64A73 /* Git */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Git;
+			sourceTree = "<group>";
+		};
+		9CF46B2830716F5600D64A73 /* Git */ = {
+			isa = PBXGroup;
+			children = (
+				9CF46B2930716F7600D64A73 /* GitView.swift */,
+			);
+			path = Git;
+			sourceTree = "<group>";
+		};
+		A6BCDDDF9CCFF505CCBFCC77 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		ADCF10F76EBF2A74473E9DC4 = {
+			isa = PBXGroup;
+			children = (
+				CF8D0BD4B75E8C2C174692A5 /* OmnieEdit */,
+				DB1B645D927A85C5D0FC9BC3 /* OmnieFileProvider */,
+				4B5FD979CAEAA85065BA98BD /* Tests */,
+				00C45FD35CB0F9C5F764F070,
+				9CF46B2630716F4400D64A73 /* Git */,
+				9CF46B2B3071707000D64A73 /* THIRD_PARTY_NOTICES.md */,
+			);
 			sourceTree = "<group>";
 		};
 		CF8D0BD4B75E8C2C174692A5 /* OmnieEdit */ = {
@@ -176,6 +200,7 @@
 				EB719B09924014392BA3815E /* PrivacyInfo.xcprivacy */,
 				DF9244BF5B0E81F3A99287FD /* Info.plist */,
 				5B3027C49DC697B78B35D52C /* OmnieEdit.entitlements */,
+				9CF46B2830716F5600D64A73 /* Git */,
 			);
 			path = OmnieEdit;
 			sourceTree = "<group>";
@@ -194,75 +219,24 @@
 			path = OmnieFileProvider;
 			sourceTree = "<group>";
 		};
-		7044B98E5D8782DA37E4768C /* OmnieEditCoreTests */ = {
+		E807F088A59AC0FB013D6094 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
-				E866F3C49BC0F9DF2B3C2031 /* CatalogContractTests.swift */,
-				64CB2B7285313FAD6C67879D /* DocumentStoreTests.swift */,
-				9A87AA1E7ADB334FE236C91B /* EditingLogicTests.swift */,
-				AB75934450D92A43B4AB7769 /* OmnieFileNameTests.swift */,
-				74E4E71DAC0F8F6DF6BCC5FE /* SessionAndSettingsTests.swift */,
+				5A40855BAD0F3818AA3D293A /* EditorView.swift */,
 			);
-			path = OmnieEditCoreTests;
+			path = Editor;
 			sourceTree = "<group>";
 		};
-		4B5FD979CAEAA85065BA98BD /* Tests */ = {
+		F3E47AD32B18086981DC8959 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				7044B98E5D8782DA37E4768C /* OmnieEditCoreTests */,
+				317BCE7B6DE7675E6F51A3EE /* OmnieEditApp.swift */,
+				1D38FC78EC6ACDCF4B1E5C8C /* AppModel.swift */,
 			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		00C45FD35CB0F9C5F764F070 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B6CDB6E5D160E013280D3C68 /* OmnieEdit.app */,
-				C5F406EF884F0E1085CC1091 /* OmnieFileProvider.appex */,
-				A8D8270AA6DB8732282C9541 /* OmnieEditTests.xctest */,
-			);
-			sourceTree = "<group>";
-		};
-		ADCF10F76EBF2A74473E9DC4 /* OmnieEdit */ = {
-			isa = PBXGroup;
-			children = (
-				CF8D0BD4B75E8C2C174692A5 /* OmnieEdit */,
-				DB1B645D927A85C5D0FC9BC3 /* OmnieFileProvider */,
-				4B5FD979CAEAA85065BA98BD /* Tests */,
-				00C45FD35CB0F9C5F764F070 /* Products */,
-			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		DC5E72DCDAFA3A0962FBEC53 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9ECD130C6F11F210A93DB889 /* OmnieEditCore */,
-				E19D0F8D38E5D7F06A6D8B4B /* OmnieDocumentKit */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1F433330F6C9FBAD806D8616 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				75C697469F1D35E64020EA19 /* OmnieDocumentKit */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		96C8A1040BEA52B0A710C717 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DB7C19BC803557E57647AC3D /* OmnieEditCore */,
-				E60DF4C6B3BEDCDC46AD5279 /* OmnieDocumentKit */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		29C7B681C8D62CBAC94D51C0 /* OmnieEdit */ = {
@@ -274,9 +248,9 @@
 				948756E4B49084A627CA0B9A /* Resources */,
 				F0AB04EE052351C80F3286E9 /* Embed Foundation Extensions */,
 			);
-			buildRules = ();
+			buildRules = (
+			);
 			dependencies = (
-				E9FAD0C6CD43534327C0AF90 /* PBXTargetDependency */,
 			);
 			name = OmnieEdit;
 			packageProductDependencies = (
@@ -287,24 +261,6 @@
 			productReference = B6CDB6E5D160E013280D3C68 /* OmnieEdit.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9831A0ED7992645038323751 /* OmnieFileProvider */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37D8ED7E760A9557D89E0E50 /* Build configuration list for PBXNativeTarget "OmnieFileProvider" */;
-			buildPhases = (
-				023680A091AF3D049494BAE1 /* Sources */,
-				1F433330F6C9FBAD806D8616 /* Frameworks */,
-				7EE2B3B2430C604B998FF75C /* Resources */,
-			);
-			buildRules = ();
-			dependencies = ();
-			name = OmnieFileProvider;
-			packageProductDependencies = (
-				473FC7F2408515D59160846F /* OmnieDocumentKit */,
-			);
-			productName = OmnieFileProvider;
-			productReference = C5F406EF884F0E1085CC1091 /* OmnieFileProvider.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		EA5815D3D83100CE3F564964 /* OmnieEditTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48751F087EE6031B0313610C /* Build configuration list for PBXNativeTarget "OmnieEditTests" */;
@@ -312,7 +268,8 @@
 				283236DFCBED01B817B33E02 /* Sources */,
 				96C8A1040BEA52B0A710C717 /* Frameworks */,
 			);
-			buildRules = ();
+			buildRules = (
+			);
 			dependencies = (
 				15361775C351088D27E4B786 /* PBXTargetDependency */,
 			);
@@ -333,28 +290,33 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
-					29C7B681C8D62CBAC94D51C0 = { CreatedOnToolsVersion = 16.0; };
-					9831A0ED7992645038323751 = { CreatedOnToolsVersion = 16.0; };
-					EA5815D3D83100CE3F564964 = { CreatedOnToolsVersion = 16.0; };
+					29C7B681C8D62CBAC94D51C0 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					EA5815D3D83100CE3F564964 = {
+						CreatedOnToolsVersion = 16.0;
+					};
 				};
 			};
 			buildConfigurationList = B0D3B7D22269663DD77FCD84 /* Build configuration list for PBXProject "OmnieEdit" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (en, Base);
+			knownRegions = (
+				en,
+				Base,
+			);
 			mainGroup = ADCF10F76EBF2A74473E9DC4;
 			packageReferences = (
 				4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */,
 			);
-			productRefGroup = 00C45FD35CB0F9C5F764F070 /* Products */;
+			productRefGroup = 00C45FD35CB0F9C5F764F070;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				29C7B681C8D62CBAC94D51C0 /* OmnieEdit */,
-				9831A0ED7992645038323751 /* OmnieFileProvider */,
 				EA5815D3D83100CE3F564964 /* OmnieEditTests */,
 			);
 		};
@@ -370,68 +332,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7EE2B3B2430C604B998FF75C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4B58B4B0578CCD6CDD0388B1 /* PrivacyInfo.xcprivacy in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		283236DFCBED01B817B33E02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13B1912055952DDA9C6683E8 /* CatalogContractTests.swift in Sources */,
+				9CF46B4A3071A8D100D64A73 /* WorkspaceTests.swift in Sources */,
+				18B5152F6BD4F06F16B88424 /* OmnieFileNameTests.swift in Sources */,
+				69343A199C74010E97F97A00 /* SessionAndSettingsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		507A349611DBB42F9CF9069B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				0FD3EB6AC5064D2DDD69D6CA /* OmnieEditApp.swift in Sources */,
 				0084AB7A0C01D74E8F9C8B5F /* AppModel.swift in Sources */,
-				2BB2673176A5E4E007B469E1 /* FileProviderBridge.swift in Sources */,
-				724234B42D792A4DB3E1173F /* DeviceAuthenticator.swift in Sources */,
-				BE83A9EFB91A27501954585E /* LockScreen.swift in Sources */,
 				D9F82001BF27F979BB0A12FA /* Palette.swift in Sources */,
-				7A9F7F01BED232F2DE7DECCF /* EditorModel.swift in Sources */,
-				762AF43A4C7ACE04CAC84DA4 /* FindBar.swift in Sources */,
-				9BFC0CB80EEA0C6AC1809C76 /* EditorTextView.swift in Sources */,
 				B3889AE3C48136F115B8F47B /* EditorView.swift in Sources */,
 				12F4EE8769B8F42172BE9F61 /* ActivityView.swift in Sources */,
-				3E39B08A40DE0E1CADBFFFA7 /* NewDocumentSheet.swift in Sources */,
 				62409A830F399BFB32805ED3 /* DocumentListView.swift in Sources */,
 				5D0B2D94A94E4180CAF92FF2 /* SettingsView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		023680A091AF3D049494BAE1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				631559B770DC21A0F9726762 /* FileProviderExtension.swift in Sources */,
-				ECC3E97A57C4CB13D521440D /* FileProviderItem.swift in Sources */,
-				EC83C56B2F8FE4CDC0D4E8D9 /* FileProviderEnumerator.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		283236DFCBED01B817B33E02 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B1912055952DDA9C6683E8 /* CatalogContractTests.swift in Sources */,
-				0CF94FA67A7AFB02D9BED7F6 /* DocumentStoreTests.swift in Sources */,
-				A58889E277F5F5F122665AE7 /* EditingLogicTests.swift in Sources */,
-				18B5152F6BD4F06F16B88424 /* OmnieFileNameTests.swift in Sources */,
-				69343A199C74010E97F97A00 /* SessionAndSettingsTests.swift in Sources */,
+				9CF46B2A30716F7600D64A73 /* GitView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E9FAD0C6CD43534327C0AF90 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9831A0ED7992645038323751 /* OmnieFileProvider */;
-			targetProxy = D799BAE6088A90139B415FCC /* PBXContainerItemProxy */;
-		};
 		15361775C351088D27E4B786 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 29C7B681C8D62CBAC94D51C0 /* OmnieEdit */;
@@ -440,225 +372,221 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		D4172F6E5EBFE002CD5F7DE7 /* Debug */ = {
+		34E15607A758B3F33642AC11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-							ALWAYS_SEARCH_USER_PATHS = NO;
-							CLANG_ANALYZER_NONNULL = YES;
-							CLANG_ENABLE_MODULES = YES;
-							CLANG_ENABLE_OBJC_ARC = YES;
-							COPY_PHASE_STRIP = NO;
-							DEBUG_INFORMATION_FORMAT = dwarf;
-							ENABLE_STRICT_OBJC_MSGSEND = YES;
-							ENABLE_TESTABILITY = YES;
-							GCC_DYNAMIC_NO_PIC = NO;
-							GCC_OPTIMIZATION_LEVEL = 0;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-							ONLY_ACTIVE_ARCH = YES;
-							SDKROOT = iphoneos;
-							SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-							SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-							SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		C9CAF956A7C660E6865F2E2E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-							ALWAYS_SEARCH_USER_PATHS = NO;
-							CLANG_ANALYZER_NONNULL = YES;
-							CLANG_ENABLE_MODULES = YES;
-							CLANG_ENABLE_OBJC_ARC = YES;
-							COPY_PHASE_STRIP = NO;
-							DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-							ENABLE_NS_ASSERTIONS = NO;
-							ENABLE_STRICT_OBJC_MSGSEND = YES;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							MTL_ENABLE_DEBUG_INFO = NO;
-							SDKROOT = iphoneos;
-							SWIFT_COMPILATION_MODE = wholemodule;
-							SWIFT_OPTIMIZATION_LEVEL = "-O";
-							SWIFT_VERSION = 5.0;
-							VALIDATE_PRODUCT = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261003;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OmnieEdit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OmnieEdit";
 			};
 			name = Release;
 		};
 		440E5A6917A92EC34723EB9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-							ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							ENABLE_PREVIEWS = YES;
-							GENERATE_INFOPLIST_FILE = YES;
-							INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							LD_RUNPATH_SEARCH_PATHS = (
-								"$(inherited)",
-								"@executable_path/Frameworks",
-							);
-							MARKETING_VERSION = 1.0;
-							SDKROOT = iphoneos;
-							SWIFT_EMIT_LOC_STRINGS = YES;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
-			
-							ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-							ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-							CODE_SIGN_ENTITLEMENTS = OmnieEdit/OmnieEdit.entitlements;
-							INFOPLIST_FILE = OmnieEdit/Info.plist;
-							INFOPLIST_KEY_CFBundleDisplayName = "Omnie-edit";
-							INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-							INFOPLIST_KEY_NSFaceIDUsageDescription = "Omnie-edit uses Face ID or your device passcode to unlock the app and locked files.";
-							INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-							INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SUPPORTS_MACCATALYST = NO;
-							SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-							SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OmnieEdit/OmnieEdit.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261003;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OmnieEdit/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Omnie Edit";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Omnie-edit uses Face ID or your device passcode to unlock the app and locked files.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		82FD79508EEAC699C8B01C6C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-							ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							ENABLE_PREVIEWS = YES;
-							GENERATE_INFOPLIST_FILE = YES;
-							INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							LD_RUNPATH_SEARCH_PATHS = (
-								"$(inherited)",
-								"@executable_path/Frameworks",
-							);
-							MARKETING_VERSION = 1.0;
-							SDKROOT = iphoneos;
-							SWIFT_EMIT_LOC_STRINGS = YES;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
-			
-							ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-							ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-							CODE_SIGN_ENTITLEMENTS = OmnieEdit/OmnieEdit.entitlements;
-							INFOPLIST_FILE = OmnieEdit/Info.plist;
-							INFOPLIST_KEY_CFBundleDisplayName = "Omnie-edit";
-							INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-							INFOPLIST_KEY_NSFaceIDUsageDescription = "Omnie-edit uses Face ID or your device passcode to unlock the app and locked files.";
-							INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-							INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SUPPORTS_MACCATALYST = NO;
-							SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-							SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-			};
-			name = Release;
-		};
-		536019FB28DD96C9DD17FD61 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_ENTITLEMENTS = OmnieFileProvider/Debug.entitlements;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							GENERATE_INFOPLIST_FILE = YES;
-							INFOPLIST_FILE = OmnieFileProvider/Info.plist;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							LD_RUNPATH_SEARCH_PATHS = (
-								"$(inherited)",
-								"@executable_path/Frameworks",
-								"@executable_path/../../Frameworks",
-							);
-							MARKETING_VERSION = 1.0;
-							APPLICATION_EXTENSION_API_ONLY = YES;
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.fileprovider;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SDKROOT = iphoneos;
-							SKIP_INSTALL = YES;
-							SWIFT_EMIT_LOC_STRINGS = YES;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
-		};
-		1E97D93B1BCA60A59E0FE408 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_ENTITLEMENTS = OmnieFileProvider/Release.entitlements;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							GENERATE_INFOPLIST_FILE = YES;
-							INFOPLIST_FILE = OmnieFileProvider/Info.plist;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							LD_RUNPATH_SEARCH_PATHS = (
-								"$(inherited)",
-								"@executable_path/Frameworks",
-								"@executable_path/../../Frameworks",
-							);
-							MARKETING_VERSION = 1.0;
-							APPLICATION_EXTENSION_API_ONLY = YES;
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.fileprovider;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SDKROOT = iphoneos;
-							SKIP_INSTALL = YES;
-							SWIFT_EMIT_LOC_STRINGS = YES;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OmnieEdit/OmnieEdit.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261003;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OmnieEdit/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Omnie Edit";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Omnie-edit uses Face ID or your device passcode to unlock the app and locked files.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 		A9EAA93E499DF2C43A46B515 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-							BUNDLE_LOADER = "$(TEST_HOST)";
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							GENERATE_INFOPLIST_FILE = YES;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							MARKETING_VERSION = 1.0;
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.tests;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SDKROOT = iphoneos;
-							SWIFT_EMIT_LOC_STRINGS = NO;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
-							TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OmnieEdit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OmnieEdit";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20261003;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OmnieEdit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OmnieEdit";
 			};
 			name = Debug;
 		};
-		34E15607A758B3F33642AC11 /* Release */ = {
+		C9CAF956A7C660E6865F2E2E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-							BUNDLE_LOADER = "$(TEST_HOST)";
-							CLANG_ENABLE_MODULES = YES;
-							CODE_SIGN_STYLE = Automatic;
-							DEVELOPMENT_TEAM = XKA8CGC2AB;
-							CURRENT_PROJECT_VERSION = 1;
-							GENERATE_INFOPLIST_FILE = YES;
-							IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-							MARKETING_VERSION = 1.0;
-							PRODUCT_BUNDLE_IDENTIFIER = ai.wckd.omnie.edit.tests;
-							PRODUCT_NAME = "$(TARGET_NAME)";
-							SDKROOT = iphoneos;
-							SWIFT_EMIT_LOC_STRINGS = NO;
-							SWIFT_VERSION = 5.0;
-							TARGETED_DEVICE_FAMILY = 1;
-							TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OmnieEdit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OmnieEdit";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = XKA8CGC2AB;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		D4172F6E5EBFE002CD5F7DE7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = XKA8CGC2AB;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -668,15 +596,6 @@
 			buildConfigurations = (
 				440E5A6917A92EC34723EB9D /* Debug */,
 				82FD79508EEAC699C8B01C6C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		37D8ED7E760A9557D89E0E50 /* Build configuration list for PBXNativeTarget "OmnieFileProvider" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				536019FB28DD96C9DD17FD61 /* Debug */,
-				1E97D93B1BCA60A59E0FE408 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -709,30 +628,25 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AACC75FCC42674A9CCAA6349 /* OmnieEditCore */ = {
+		5B9E75F2495F652798B2AEF9 /* OmnieDocumentKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */;
-			productName = OmnieEditCore;
+			productName = OmnieDocumentKit;
 		};
 		6DCFE345BFEF77F946E3550B /* OmnieDocumentKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */;
 			productName = OmnieDocumentKit;
 		};
-		473FC7F2408515D59160846F /* OmnieDocumentKit */ = {
+		AACC75FCC42674A9CCAA6349 /* OmnieEditCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */;
-			productName = OmnieDocumentKit;
+			productName = OmnieEditCore;
 		};
 		C7E68D88B6B6EC86E3F2D243 /* OmnieEditCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */;
 			productName = OmnieEditCore;
-		};
-		5B9E75F2495F652798B2AEF9 /* OmnieDocumentKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4FF15B936B8851E2CAA578B9 /* XCLocalSwiftPackageReference "." */;
-			productName = OmnieDocumentKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDisplayName</key>
-	<string>Omnie-edit</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -28,21 +26,7 @@
 			</array>
 		</dict>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Omnie-edit uses Face ID or your device passcode to unlock the app and locked files.</string>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 	<key>UILaunchScreen</key>
 	<dict/>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
 </dict>
 </plist>

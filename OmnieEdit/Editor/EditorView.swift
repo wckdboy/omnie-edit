@@ -1,197 +1,333 @@
-import SwiftUI
 import OmnieEditCore
+import SwiftUI
 
 struct EditorView: View {
-    let documentID: String
+    let tabID: UUID
     @Bindable var appModel: AppModel
-    @Environment(\.palette) private var palette
+
     @Environment(\.dismiss) private var dismiss
-    @State private var editor: EditorModel?
-    @State private var renaming = false
-    @State private var renameText = ""
-    @State private var confirmingDelete = false
-    @State private var shareURL: ShareItem?
 
     var body: some View {
         Group {
-            if let editor {
-                editing(editor)
+            if let tab = appModel.selectedTab {
+                EditorContent(tab: tab, appModel: appModel)
             } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ContentUnavailableView(
+                    "No Open File",
+                    systemImage: "doc",
+                    description: Text("Open a file to start editing.")
+                )
             }
         }
-        .background(palette.background.ignoresSafeArea())
         .onAppear {
-            if editor == nil {
-                editor = appModel.makeEditor(id: documentID)
-                if editor == nil {
-                    dismiss()
-                }
-            }
-            enforceLock()
+            appModel.selectTab(id: tabID)
         }
-        .onChange(of: appModel.gate.unlockedDocumentIDs) { _, _ in
-            enforceLock()
-        }
-        .onDisappear {
-            editor?.saveNow()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .omnieFlushSaves)) { _ in
-            editor?.saveNow()
-        }
-    }
-
-    @ViewBuilder
-    private func editing(_ editor: EditorModel) -> some View {
-        EditorTextView(
-            text: editor.draft,
-            tokens: SyntaxHighlighter.tokens(in: editor.draft, language: editor.language),
-            matches: editor.matches,
-            currentMatch: editor.matches.isEmpty ? nil : editor.matchIndex,
-            selectionNonce: editor.selectionNonce,
-            fontSize: appModel.settings.fontSize,
-            monospace: appModel.settings.useMonospace,
-            showLineNumbers: appModel.settings.showLineNumbers,
-            softWrap: appModel.settings.softWrap,
-            palette: palette,
-            onChange: { editor.replaceDraft($0) }
-        )
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if editor.isFinding {
-                FindBar(editor: editor)
-            }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(editor.name)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                HStack(spacing: 6) {
-                    Text(editor.name)
-                        .font(.headline)
-                        .lineLimit(1)
-                    if editor.isDirty {
-                        Circle()
-                            .fill(palette.text.color)
-                            .frame(width: 6, height: 6)
-                            .accessibilityLabel("Unsaved changes")
-                    }
-                }
-            }
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                Button {
-                    editor.isFinding.toggle()
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                }
-                .accessibilityLabel("Find")
-                .keyboardShortcut("f", modifiers: .command)
-                Button {
-                    share(editor)
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .accessibilityLabel("Share")
-                Menu {
-                    Button("Save") { editor.saveNow() }
-                        .keyboardShortcut("s", modifiers: .command)
-                        .disabled(!editor.isDirty)
-                    Button("Rename") {
-                        renameText = editor.name
-                        renaming = true
-                    }
-                    lockButton(editor)
-                    Button(appModel.settings.showLineNumbers ? "Hide line numbers" : "Show line numbers") {
-                        appModel.settings.showLineNumbers.toggle()
-                    }
-                    Button(appModel.settings.softWrap ? "Disable soft wrap" : "Enable soft wrap") {
-                        appModel.settings.softWrap.toggle()
-                    }
-                    Button(appModel.settings.useMonospace ? "Use proportional font" : "Use monospace") {
-                        appModel.settings.useMonospace.toggle()
-                    }
-                    Button("Smaller text") {
-                        appModel.settings.fontSize -= 1
-                    }
-                    Button("Larger text") {
-                        appModel.settings.fontSize += 1
-                    }
-                    Divider()
-                    Button("Delete", role: .destructive) {
-                        confirmingDelete = true
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-                .accessibilityLabel("More")
-            }
-        }
-        .alert("Rename", isPresented: $renaming) {
-            TextField("File name", text: $renameText)
-            Button("Cancel", role: .cancel) {}
-            Button("Rename") { editor.rename(to: renameText) }
-        }
-        .confirmationDialog("Delete \(editor.name)?", isPresented: $confirmingDelete, titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                appModel.delete(id: documentID)
+        .onChange(of: appModel.tabs.isEmpty) { _, isEmpty in
+            if isEmpty {
                 dismiss()
             }
-            Button("Cancel", role: .cancel) {}
-        }
-        .sheet(item: $shareURL) { item in
-            ActivityView(items: [item.url])
-        }
-        .overlay(alignment: .bottomLeading) {
-            if let saveError = editor.saveError, !editor.isFinding {
-                Text(saveError)
-                    .font(.caption)
-                    .foregroundStyle(palette.text.color)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(palette.gutter.color)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func lockButton(_ editor: EditorModel) -> some View {
-        let locked = appModel.documents.first(where: { $0.id == documentID })?.isLocked ?? false
-        if locked {
-            Button("Unlock file") {
-                Task {
-                    if await appModel.unlockDocument(id: documentID) {
-                        editor.saveNow()
-                    }
-                }
-            }
-        } else {
-            Button("Lock file") {
-                editor.saveNow()
-                appModel.lockDocument(id: documentID)
-                appModel.gate = appModel.gate.grantingDocumentUnlock(id: documentID)
-            }
-        }
-    }
-
-    private func share(_ editor: EditorModel) {
-        editor.saveNow()
-        do {
-            shareURL = ShareItem(url: try appModel.store.exportURL(id: documentID))
-        } catch {
-            editor.report(error.localizedDescription)
-        }
-    }
-
-    private func enforceLock() {
-        guard let document = appModel.documents.first(where: { $0.id == documentID }) else { return }
-        if appModel.gate.needsDocumentUnlock(id: document.id, isLocked: document.isLocked) {
-            dismiss()
         }
     }
 }
 
-struct ShareItem: Identifiable {
+private struct EditorContent: View {
+    @Bindable var tab: EditorTab
+    @Bindable var appModel: AppModel
+
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var command: CodeEditorCommand?
+    @State private var showingGoToLine = false
+    @State private var lineNumber = ""
+    @State private var showingRename = false
+    @State private var renameText = ""
+    @State private var showingMarkdownPreview = false
+    @State private var shareItem: ShareItem?
+
+    private var palette: Palette {
+        Palette.resolve(appModel.settings.theme, colorScheme)
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            tabStrip
+
+            if showingMarkdownPreview, tab.language == .markdown {
+                MarkdownPreview(text: tab.text, palette: palette)
+            } else {
+                RunestoneCodeEditor(
+                    text: textBinding,
+                    language: tab.language,
+                    showLineNumbers: appModel.settings.showLineNumbers,
+                    softWrap: appModel.settings.softWrap,
+                    fontSize: appModel.settings.fontSize,
+                    colorTheme: palette.editorColorTheme,
+                    command: command
+                )
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+            }
+        }
+        .navigationTitle(tab.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                editorToolbar
+            }
+        }
+        .alert("Go to Line", isPresented: $showingGoToLine) {
+            TextField("Line number", text: $lineNumber)
+                .keyboardType(.numberPad)
+            Button("Cancel", role: .cancel) {}
+            Button("Go") {
+                guard let line = Int(lineNumber), line > 0 else { return }
+                command = .goToLine(line, UUID())
+            }
+        } message: {
+            Text("Enter a line number in the current file.")
+        }
+        .alert("Rename File", isPresented: $showingRename) {
+            TextField("Name", text: $renameText)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            Button("Cancel", role: .cancel) {}
+            Button("Rename") {
+                appModel.renameOpenFile(tab, to: renameText)
+            }
+        } message: {
+            Text("Include the extension to change the file's type, e.g. notes.md")
+        }
+        .sheet(item: $shareItem) { item in
+            ActivityView(items: [item.url])
+        }
+        .overlay(alignment: .bottom) {
+            if let saveError = tab.saveError {
+                saveErrorToast(saveError)
+                    .padding(.bottom, 8)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func saveErrorToast(_ message: String) -> some View {
+        let label = Text(message)
+            .font(.caption)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        if #available(iOS 26.0, *) {
+            label.glassEffect(.regular.tint(.red), in: Capsule())
+        } else {
+            label.background(.red, in: Capsule())
+        }
+    }
+
+    @ViewBuilder
+    private var tabStrip: some View {
+        if #available(iOS 26.0, *) {
+            ScrollView(.horizontal) {
+                GlassEffectContainer(spacing: 8) {
+                    HStack(spacing: 8) {
+                        ForEach(appModel.tabs) { openTab in
+                            if openTab.id == tab.id {
+                                tabChip(for: openTab)
+                                    .foregroundStyle(.white)
+                                    .gradientGlassBackground(in: Capsule())
+                            } else {
+                                tabChip(for: openTab)
+                                    .glassEffect(.regular.interactive(), in: Capsule())
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 7)
+                }
+            }
+            .scrollIndicators(.hidden)
+            .accessibilityLabel("Open files")
+        } else {
+            ScrollView(.horizontal) {
+                HStack(spacing: 6) {
+                    ForEach(appModel.tabs) { openTab in
+                        tabChip(for: openTab)
+                            .background(
+                                openTab.id == tab.id ? Color.accentColor.opacity(0.16) : Color.secondary.opacity(0.09),
+                                in: Capsule()
+                            )
+                    }
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+            }
+            .scrollIndicators(.hidden)
+            .background(.bar)
+            .accessibilityLabel("Open files")
+        }
+    }
+
+    private func tabChip(for openTab: EditorTab) -> some View {
+        HStack(spacing: 5) {
+            Button {
+                appModel.selectTab(id: openTab.id)
+            } label: {
+                HStack(spacing: 5) {
+                    Text(openTab.name)
+                        .lineLimit(1)
+                    if openTab.isDirty {
+                        Circle()
+                            .frame(width: 6, height: 6)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+
+            Button("Close \(openTab.name)", systemImage: "xmark") {
+                Task {
+                    await appModel.saveAndCloseTab(id: openTab.id)
+                }
+            }
+            .labelStyle(.iconOnly)
+            .font(.caption2)
+        }
+        .font(.caption)
+        .padding(.leading, 10)
+        .padding(.trailing, 7)
+        .padding(.vertical, 7)
+    }
+
+    @ViewBuilder
+    private var editorToolbar: some View {
+        if appModel.settings.preferredHand == .right {
+            Spacer()
+            findButton
+            undoButton
+            saveButton
+            moreMenu
+        } else {
+            moreMenu
+            saveButton
+            undoButton
+            findButton
+            Spacer()
+        }
+    }
+
+    private var saveButton: some View {
+        Button(
+            tab.isDirty ? "Save" : "Saved",
+            systemImage: tab.isDirty ? "square.and.arrow.down" : "checkmark.circle"
+        ) {
+            Task {
+                await appModel.saveSelectedTab()
+            }
+        }
+        .keyboardShortcut("s", modifiers: .command)
+        .disabled(!tab.isDirty)
+        .accessibilityHint(
+            tab.isDirty
+                ? "Saves changes to the original file"
+                : "All changes are saved"
+        )
+    }
+
+    private var findButton: some View {
+        Button("Find", systemImage: "magnifyingglass") {
+            command = .find(UUID())
+        }
+        .keyboardShortcut("f", modifiers: .command)
+    }
+
+    private var undoButton: some View {
+        Menu("Edit History", systemImage: "arrow.uturn.backward") {
+            Button("Undo", systemImage: "arrow.uturn.backward") {
+                command = .undo(UUID())
+            }
+            Button("Redo", systemImage: "arrow.uturn.forward") {
+                command = .redo(UUID())
+            }
+        }
+    }
+
+    private var moreMenu: some View {
+        Menu("More", systemImage: "ellipsis.circle") {
+            Button("Rename", systemImage: "pencil") {
+                renameText = tab.name
+                showingRename = true
+            }
+
+            Button("Go to Line", systemImage: "number") {
+                lineNumber = ""
+                showingGoToLine = true
+            }
+
+            if tab.language == .markdown {
+                Button(
+                    showingMarkdownPreview ? "Show Editor" : "Preview Markdown",
+                    systemImage: showingMarkdownPreview ? "pencil" : "eye"
+                ) {
+                    showingMarkdownPreview.toggle()
+                }
+            }
+
+            Button(
+                appModel.settings.showLineNumbers ? "Hide Line Numbers" : "Show Line Numbers",
+                systemImage: "list.number"
+            ) {
+                appModel.settings.showLineNumbers.toggle()
+            }
+
+            Button(
+                appModel.settings.softWrap ? "Disable Soft Wrap" : "Enable Soft Wrap",
+                systemImage: "text.word.spacing"
+            ) {
+                appModel.settings.softWrap.toggle()
+            }
+
+            Divider()
+
+            Button("Share File", systemImage: "square.and.arrow.up") {
+                Task {
+                    await appModel.saveSelectedTab()
+                    guard tab.saveError == nil else { return }
+                    shareItem = ShareItem(url: tab.url)
+                }
+            }
+        }
+    }
+
+    private var textBinding: Binding<String> {
+        Binding(
+            get: { tab.text },
+            set: { newText in
+                guard tab.text != newText else { return }
+                tab.text = newText
+                appModel.textDidChange(in: tab)
+            }
+        )
+    }
+}
+
+private struct MarkdownPreview: View {
+    let text: String
+    let palette: Palette
+
+    private var renderedText: AttributedString {
+        (try? AttributedString(markdown: text)) ?? AttributedString(text)
+    }
+
+    var body: some View {
+        ScrollView {
+            Text(renderedText)
+                .foregroundStyle(palette.text.color)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .textSelection(.enabled)
+                .padding(20)
+        }
+        .background(palette.background.color)
+        .accessibilityLabel("Markdown preview")
+    }
+}
+
+private struct ShareItem: Identifiable {
     let url: URL
+
     var id: String { url.path }
 }

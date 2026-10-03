@@ -1,5 +1,108 @@
 import OmnieEditCore
 import SwiftUI
+
+struct GlassSearchField: View {
+    let prompt: String
+    @Binding var text: String
+    var width: CGFloat
+    @FocusState.Binding var isFocused: Bool
+    var onSubmit: () -> Void = {}
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            TextField(prompt, text: $text)
+                .textFieldStyle(.plain)
+                .focused($isFocused)
+                .submitLabel(.search)
+                .onSubmit(onSubmit)
+            if !text.isEmpty {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 28, height: 28)
+                    .contentShape(Rectangle())
+                    .onTapGesture { text = "" }
+                    .accessibilityLabel("Clear search")
+                    .accessibilityAddTraits(.isButton)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .frame(width: width)
+        .fixedSize(horizontal: true, vertical: false)
+        .layoutPriority(1)
+        .modifier(GlassSearchSurface())
+        .accessibilityElement(children: .contain)
+    }
+}
+
+private struct GlassSearchSurface: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect()
+        } else {
+            content
+                .background(.thinMaterial, in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(.primary.opacity(0.12), lineWidth: 0.5)
+                }
+        }
+    }
+}
+
+/// Omnie's brand gradient: purple into orange. Used sparingly, on the app's
+/// most prominent custom controls only (the create action, the active tab).
+enum BrandGradient {
+    static let accent = LinearGradient(
+        colors: [
+            Color(red: 0.62, green: 0.18, blue: 0.86),
+            Color(red: 0.98, green: 0.58, blue: 0.16),
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+}
+
+/// Fills `shape` with the brand gradient, then lays clear Liquid Glass over it
+/// on iOS 26+ so the gradient reads through the material's specular highlight
+/// instead of being tinted flat. A gradient can't be passed to `Glass.tint`
+/// (it only accepts `Color`), so this is built directly rather than through a
+/// button style — which also sidesteps `buttonStyle` not reliably reaching a
+/// `Menu`'s label the way it does a plain `Button`.
+private struct GradientGlassBackground<S: Shape>: ViewModifier {
+    let shape: S
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .background(BrandGradient.accent, in: shape)
+                .glassEffect(.clear.interactive(), in: shape)
+        } else {
+            content.background(BrandGradient.accent, in: shape)
+        }
+    }
+}
+
+extension View {
+    func gradientGlassBackground<S: Shape>(in shape: S) -> some View {
+        modifier(GradientGlassBackground(shape: shape))
+    }
+
+    /// The app's one "primary action" treatment: a round, elevated,
+    /// gradient-glass icon for the single most important action in a toolbar
+    /// (e.g. create). Apply directly to a label's content.
+    func primaryGlassIcon() -> some View {
+        frame(width: 44, height: 44)
+            .foregroundStyle(.white)
+            .gradientGlassBackground(in: Circle())
+    }
+}
 import UIKit
 
 struct RGBA: Equatable {
@@ -132,5 +235,26 @@ extension EnvironmentValues {
     var palette: Palette {
         get { self[PaletteKey.self] }
         set { self[PaletteKey.self] = newValue }
+    }
+}
+
+extension Palette {
+    /// Bridges this SwiftUI-facing palette to the plain `UIColor` bag the
+    /// Runestone adapter in `OmnieEditCore` renders with.
+    var editorColorTheme: EditorColorTheme {
+        EditorColorTheme(
+            background: background.uiColor,
+            text: text.uiColor,
+            gutterBackground: gutter.uiColor,
+            secondary: secondary.uiColor,
+            hairline: hairline.uiColor,
+            keyword: keyword.uiColor,
+            string: string.uiColor,
+            comment: comment.uiColor,
+            number: number.uiColor,
+            matchBackground: match.uiColor,
+            currentMatchBackground: currentMatch.uiColor,
+            keywordBold: keywordBold
+        )
     }
 }

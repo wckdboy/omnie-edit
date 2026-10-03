@@ -8,6 +8,11 @@ public enum AppTheme: String, Codable, CaseIterable, Equatable, Sendable {
     case monochrome
 }
 
+public enum PreferredHand: String, Codable, CaseIterable, Equatable, Sendable {
+    case right
+    case left
+}
+
 public enum SuggestedExtensions {
     public static let all = [
         "txt", "md", "swift", "py", "js", "ts", "json", "html", "css", "sh",
@@ -32,13 +37,10 @@ public enum SuggestedExtensions {
 public struct EditorSettings: Equatable, Sendable {
     public var theme: AppTheme
     public var fontSize: Double
-    public var useMonospace: Bool
     public var showLineNumbers: Bool
     public var softWrap: Bool
+    public var preferredHand: PreferredHand
     public var defaultExtension: String
-    public var appLockEnabled: Bool
-    /// When false, document roots are marked excluded from device backup.
-    public var includeInDeviceBackup: Bool
 
     public static let minFontSize = 12.0
     public static let maxFontSize = 28.0
@@ -46,32 +48,26 @@ public struct EditorSettings: Equatable, Sendable {
     public static let `default` = EditorSettings(
         theme: .system,
         fontSize: 16,
-        useMonospace: true,
-        showLineNumbers: true,
+        showLineNumbers: false,
         softWrap: true,
-        defaultExtension: SuggestedExtensions.fallback,
-        appLockEnabled: false,
-        includeInDeviceBackup: false
+        preferredHand: .right,
+        defaultExtension: SuggestedExtensions.fallback
     )
 
     public init(
         theme: AppTheme,
         fontSize: Double,
-        useMonospace: Bool,
         showLineNumbers: Bool,
         softWrap: Bool,
-        defaultExtension: String,
-        appLockEnabled: Bool,
-        includeInDeviceBackup: Bool
+        preferredHand: PreferredHand,
+        defaultExtension: String
     ) {
         self.theme = theme
         self.fontSize = fontSize
-        self.useMonospace = useMonospace
         self.showLineNumbers = showLineNumbers
         self.softWrap = softWrap
+        self.preferredHand = preferredHand
         self.defaultExtension = defaultExtension
-        self.appLockEnabled = appLockEnabled
-        self.includeInDeviceBackup = includeInDeviceBackup
     }
 
     public func clamped() -> EditorSettings {
@@ -86,12 +82,10 @@ extension EditorSettings: Codable {
     private enum CodingKeys: String, CodingKey {
         case theme
         case fontSize
-        case useMonospace
         case showLineNumbers
         case softWrap
+        case preferredHand
         case defaultExtension
-        case appLockEnabled
-        case includeInDeviceBackup
     }
 
     public init(from decoder: Decoder) throws {
@@ -99,21 +93,17 @@ extension EditorSettings: Codable {
         let themeRaw = try container.decodeIfPresent(String.self, forKey: .theme) ?? AppTheme.system.rawValue
         let theme = AppTheme(rawValue: themeRaw) ?? .system
         let fontSize = try container.decodeIfPresent(Double.self, forKey: .fontSize) ?? Self.default.fontSize
-        let useMonospace = try container.decodeIfPresent(Bool.self, forKey: .useMonospace) ?? true
-        let showLineNumbers = try container.decodeIfPresent(Bool.self, forKey: .showLineNumbers) ?? true
+        let showLineNumbers = try container.decodeIfPresent(Bool.self, forKey: .showLineNumbers) ?? Self.default.showLineNumbers
         let softWrap = try container.decodeIfPresent(Bool.self, forKey: .softWrap) ?? true
+        let preferredHand = try container.decodeIfPresent(PreferredHand.self, forKey: .preferredHand) ?? .right
         let defaultExtension = try container.decodeIfPresent(String.self, forKey: .defaultExtension) ?? SuggestedExtensions.fallback
-        let appLockEnabled = try container.decodeIfPresent(Bool.self, forKey: .appLockEnabled) ?? false
-        let includeInDeviceBackup = try container.decodeIfPresent(Bool.self, forKey: .includeInDeviceBackup) ?? false
         self.init(
             theme: theme,
             fontSize: fontSize,
-            useMonospace: useMonospace,
             showLineNumbers: showLineNumbers,
             softWrap: softWrap,
-            defaultExtension: defaultExtension,
-            appLockEnabled: appLockEnabled,
-            includeInDeviceBackup: includeInDeviceBackup
+            preferredHand: preferredHand,
+            defaultExtension: defaultExtension
         )
         self = clamped()
     }
@@ -123,12 +113,10 @@ extension EditorSettings: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(clamped.theme.rawValue, forKey: .theme)
         try container.encode(clamped.fontSize, forKey: .fontSize)
-        try container.encode(clamped.useMonospace, forKey: .useMonospace)
         try container.encode(clamped.showLineNumbers, forKey: .showLineNumbers)
         try container.encode(clamped.softWrap, forKey: .softWrap)
+        try container.encode(clamped.preferredHand, forKey: .preferredHand)
         try container.encode(clamped.defaultExtension, forKey: .defaultExtension)
-        try container.encode(clamped.appLockEnabled, forKey: .appLockEnabled)
-        try container.encode(clamped.includeInDeviceBackup, forKey: .includeInDeviceBackup)
     }
 }
 

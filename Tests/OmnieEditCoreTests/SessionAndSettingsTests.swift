@@ -2,53 +2,6 @@ import XCTest
 import OmnieEditCore
 
 final class SessionAndSettingsTests: XCTestCase {
-    func testColdStartLocksOnlyWhenEnabled() {
-        let open = SessionGate.coldStart(appLockEnabled: false)
-        XCTAssertFalse(open.needsAppUnlock)
-        XCTAssertFalse(open.privacyCover)
-
-        let locked = SessionGate.coldStart(appLockEnabled: true)
-        XCTAssertTrue(locked.needsAppUnlock)
-        XCTAssertTrue(locked.privacyCover)
-    }
-
-    func testInactiveCoversWithoutDroppingUnlock() {
-        let start = SessionGate.coldStart(appLockEnabled: true).grantingAppUnlock()
-        let covered = start.transition(.inactive)
-        XCTAssertTrue(covered.privacyCover)
-        XCTAssertFalse(covered.needsAppUnlock)
-        let back = covered.transition(.active)
-        XCTAssertFalse(back.privacyCover)
-        XCTAssertFalse(back.needsAppUnlock)
-    }
-
-    func testBackgroundRelocksAppAndDocuments() {
-        var gate = SessionGate.coldStart(appLockEnabled: true).grantingAppUnlock()
-        gate = gate.grantingDocumentUnlock(id: "doc")
-        let background = gate.transition(.background)
-        XCTAssertTrue(background.needsAppUnlock)
-        XCTAssertTrue(background.unlockedDocumentIDs.isEmpty)
-        XCTAssertTrue(background.needsDocumentUnlock(id: "doc", isLocked: true))
-    }
-
-    func testInactiveCanShieldLockedDocumentsWithoutAppLock() {
-        let start = SessionGate.coldStart(appLockEnabled: false)
-        let covered = start.transition(.inactive, shieldOnInactive: true)
-        XCTAssertTrue(covered.privacyCover)
-        XCTAssertFalse(covered.needsAppUnlock)
-        XCTAssertFalse(covered.transition(.active, shieldOnInactive: true).privacyCover)
-    }
-
-    func testBackgroundClearsDocumentUnlocksWhenAppLockIsOff() {
-        var gate = SessionGate.coldStart(appLockEnabled: false)
-        gate = gate.grantingDocumentUnlock(id: "doc")
-        let background = gate.transition(.background)
-        XCTAssertFalse(background.needsAppUnlock)
-        XCTAssertFalse(background.privacyCover)
-        XCTAssertTrue(background.needsDocumentUnlock(id: "doc", isLocked: true))
-        XCTAssertFalse(background.needsDocumentUnlock(id: "doc", isLocked: false))
-    }
-
     func testSettingsRoundTripAndFallback() throws {
         let suite = "omnie.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
@@ -59,28 +12,26 @@ final class SessionAndSettingsTests: XCTestCase {
         settings.theme = .monochrome
         settings.fontSize = 99
         settings.defaultExtension = "SWIFT"
-        settings.appLockEnabled = true
-        settings.includeInDeviceBackup = true
+        settings.preferredHand = .left
         EditorSettingsStore.save(settings, to: defaults)
         let loaded = EditorSettingsStore.load(from: defaults)
         XCTAssertEqual(loaded.theme, .monochrome)
         XCTAssertEqual(loaded.fontSize, EditorSettings.maxFontSize)
         XCTAssertEqual(loaded.defaultExtension, "swift")
-        XCTAssertTrue(loaded.appLockEnabled)
-        XCTAssertTrue(loaded.includeInDeviceBackup)
+        XCTAssertEqual(loaded.preferredHand, .left)
 
         defaults.set(Data("[]".utf8), forKey: EditorSettingsStore.storageKey)
         XCTAssertEqual(EditorSettingsStore.load(from: defaults), .default)
 
         let unknown = """
-        {"theme":"neon","fontSize":8,"defaultExtension":"../x","appLockEnabled":false}
+        {"theme":"neon","fontSize":8,"defaultExtension":"../x"}
         """
         defaults.set(Data(unknown.utf8), forKey: EditorSettingsStore.storageKey)
         let recovered = EditorSettingsStore.load(from: defaults)
         XCTAssertEqual(recovered.theme, .system)
         XCTAssertEqual(recovered.fontSize, EditorSettings.minFontSize)
         XCTAssertEqual(recovered.defaultExtension, "txt")
-        XCTAssertTrue(recovered.useMonospace)
+        XCTAssertEqual(recovered.preferredHand, .right)
     }
 
     func testEditorSessionAndAutosaveClock() {

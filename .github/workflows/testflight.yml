@@ -2,11 +2,10 @@
 #
 # This file is the release path. It does not run on pull requests.
 #
-# Runner: macos-15. Omnie-edit is objectVersion 56 with
-# IPHONEOS_DEPLOYMENT_TARGET 17.0, so Xcode 16 or later is enough.
-# The job selects Xcode 16.4 (/Applications/Xcode_16.4.app) before the
-# script runs.
-# scripts/ci-testflight.sh refuses to archive on anything older than Xcode 16.
+# Runner: GitHub's generally available macOS 26 image with Xcode 26.6.
+# Omnie-edit deploys back to iOS 17, but its native Liquid Glass toolbar code
+# is compiled with the iOS 26 SwiftUI SDK. The release script therefore
+# refuses to archive on anything older than Xcode 26.
 #
 # Signing is manual. The script imports the distribution certificate and the
 # two App Store profiles, then writes Manual, Apple Distribution,
@@ -42,16 +41,13 @@ concurrency:
 jobs:
   upload:
     name: Archive and upload to TestFlight
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-
-      - name: Select Xcode 16.4
-        run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
 
       - name: Archive, export, and upload
         env:

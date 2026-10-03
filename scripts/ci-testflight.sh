@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Archive Omnie-edit for the App Store and upload it to TestFlight.
 #
-# Omnie-edit needs Xcode 16 or later. The project is objectVersion 56 and
-# IPHONEOS_DEPLOYMENT_TARGET is 17.0. The workflow runs on macos-15 and
-# selects Xcode 16.4.
+# Omnie-edit deploys back to iOS 17, but its current SwiftUI toolbar code is
+# compiled with the iOS 26 SDK. The workflow runs on macos-26, whose default
+# Xcode includes that SDK.
 #
 # Signing is manual. Per-target xcodebuild settings (OmnieEdit:CODE_SIGN_*)
 # are ignored, so Xcode still asks for a Development profile. Before the
@@ -81,23 +81,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
-developer_dir="/Applications/Xcode_16.4.app/Contents/Developer"
-if [[ -d "$developer_dir" ]]; then
-  sudo xcode-select -s "$developer_dir"
-  echo "Selected ${developer_dir}"
-else
-  echo "Xcode_16.4.app is not installed. Using the active developer directory."
-fi
-
 if ! command -v xcodebuild >/dev/null 2>&1; then
-  fail "xcodebuild is not installed. Run .github/workflows/testflight.yml on macos-15, which provides Xcode 16.4."
+  fail "xcodebuild is not installed. Run .github/workflows/testflight.yml on macos-26."
 fi
 
 version_line="$(xcodebuild -version)"
 version_line="${version_line%%$'\n'*}"
 major="$(printf '%s\n' "$version_line" | awk '{ split($2, a, "."); print a[1] }')"
-if [[ -z "$major" || "$major" -lt 16 ]]; then
-  fail "Found ${version_line:-no Xcode version}. Omnie-edit archives with Xcode 16 or later. The macos-15 workflow selects Xcode 16.4."
+if [[ -z "$major" || "$major" -lt 26 ]]; then
+  fail "Found ${version_line:-no Xcode version}. Omnie-edit archives with Xcode 26 or later."
 fi
 echo "Using ${version_line}"
 
@@ -173,11 +165,11 @@ for entitlements in \
   OmnieFileProvider/Debug.entitlements \
   OmnieFileProvider/Release.entitlements
 do
-  if grep -q "com.apple.security.application-groups" "$entitlements"; then
-    fail "${entitlements} still requests com.apple.security.application-groups. The App Store profiles have empty app groups."
+  if ! grep -q "com.apple.security.application-groups" "$entitlements"; then
+    fail "${entitlements} is missing com.apple.security.application-groups. OMNIE sharing requires it."
   fi
-  if grep -q "group.app.omnie.edit" "$entitlements"; then
-    fail "${entitlements} still requests group.app.omnie.edit. The App Store profiles have empty app groups."
+  if ! grep -q "group.app.omnie.edit" "$entitlements"; then
+    fail "${entitlements} is missing group.app.omnie.edit. OMNIE sharing requires it."
   fi
 done
 if ! grep -q "com.apple.developer.fileprovider.testing-mode" OmnieFileProvider/Debug.entitlements; then
@@ -286,8 +278,8 @@ install_profile() {
   if [[ "$app_id" != "${team}.${expected_bundle}" ]]; then
     fail "${secret_name} application-identifier is '${app_id}', expected '${team}.${expected_bundle}'."
   fi
-  if grep -q "group.app.omnie.edit" "$decoded"; then
-    fail "${secret_name} still entitles group.app.omnie.edit. The TestFlight profiles must have empty app groups."
+  if ! grep -q "group.app.omnie.edit" "$decoded"; then
+    fail "${secret_name} does not entitle group.app.omnie.edit. Regenerate the profile with the OMNIE App Group."
   fi
   local profiles_dir="${HOME}/Library/MobileDevice/Provisioning Profiles"
   local dest="${profiles_dir}/${uuid}.mobileprovision"
